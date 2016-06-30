@@ -12,18 +12,18 @@
 %token ADD SUB MUL DIV CR
 %type <double_value> expression term primary_expression
 %%
-line_list
-    : line
+line_list /*多行规则*/
+    : line /*单行规则*/
     | line_list line
     ;
 line
-    : expression CR
+    : expression CR /*一个表达式后接换行符*/
     {
         printf(">>%lf\n", $1);
     }
-expression
-    : term
-    | expression ADD term
+expression /*表达式规则*/
+    : term /*和项*/
+    | expression ADD term /*表达式 + 和项*/
     {
         $$ = $1 + $3;
     }
@@ -32,9 +32,9 @@ expression
         $$ = $1 - $3;
     }
     ;
-term
-    : primary_expression
-    | term MUL primary_expression 
+term /*和项规则*/
+    : primary_expression /*一元表达式*/
+    | term MUL primary_expression
     {
         $$ = $1 * $3;
     }
@@ -43,8 +43,8 @@ term
         $$ = $1 / $3;
     }
     ;
-primary_expression
-    : DOUBLE_LITERAL
+primary_expression /*一元表达式规则*/
+    : DOUBLE_LITERAL /*实数的字面常量*/
     ;                 
 %%
 int yyerror(char const *str)
