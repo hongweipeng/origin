@@ -10,7 +10,7 @@ int yywrap(void) {
 %}
 
 %%
-"+"		return ADD;/*ADD等宏在y.tab.h中已定义*/
+"+"		return ADD;/*ADD等宏会在y.tab.h中被定义*/
 "-"		return SUB;
 "*"		return MUL;
 "/"		return DIV;

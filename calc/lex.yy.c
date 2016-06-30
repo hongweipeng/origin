@@ -747,7 +747,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 13 "calc.l"
-return ADD;
+return ADD;/*ADD等宏在y.tab.h中已定义*/
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -776,14 +776,14 @@ YY_RULE_SETUP
 {
 	double temp;
 	sscanf(yytext, "%lf", &temp);
-	yylval.double_value = temp; // 的
+	yylval.double_value = temp; /*解析出的值放在全局变量yylval中，yylval是个联合体，可放任意记号值*/
 	return DOUBLE_LITERAL;
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 26 "calc.l"
-;
+;/*对空格和制表符，其动作为空*/
 	YY_BREAK
 case 8:
 YY_RULE_SETUP

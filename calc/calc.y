@@ -1,12 +1,13 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#define YYDEBUG 1
+#define YYDEBUG 1 //系统保留定义的token，值0-255
 %}
 %union {
     int          int_value;
     double       double_value;
 }
+/*%token是声明一个标记，编译后产生#define ADD 259 (0-255是系统保留的token)*/
 %token <double_value>      DOUBLE_LITERAL
 %token ADD SUB MUL DIV CR
 %type <double_value> expression term primary_expression
