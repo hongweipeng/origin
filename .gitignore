@@ -1,2 +1,4 @@
 *~
 *.output
+*.tab.c
+*.tab.h
