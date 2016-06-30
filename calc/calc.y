@@ -46,8 +46,7 @@ primary_expression
     : DOUBLE_LITERAL
     ;                 
 %%
-int
-yyerror(char const *str)
+int yyerror(char const *str)
 {
     extern char *yytext;
     fprintf(stderr, "parser error near %s\n", yytext);
