@@ -9,7 +9,7 @@
 }
 /*%token是声明一个标记，编译后产生#define ADD 259 (0-255是系统保留的token)*/
 %token <double_value>      DOUBLE_LITERAL
-%token ADD SUB MUL DIV CR
+%token ADD SUB MUL DIV LP RP CR
 %type <double_value> expression term primary_expression
 %%
 line_list /*多行规则*/
@@ -45,6 +45,10 @@ term /*和项规则*/
     ;
 primary_expression /*一元表达式规则*/
     : DOUBLE_LITERAL /*实数的字面常量*/
+    | LP expression RP /*括号*/
+    {
+        $$ = $2;
+    }
     ;                 
 %%
 int yyerror(char const *str)
