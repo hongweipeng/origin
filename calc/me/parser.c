@@ -34,6 +34,8 @@ double parse_expression(void);
 
 static double parse_primary_expression() {
     Token token;
+    double value;
+    
     my_get_token(&token);
     if (token.kind == NUMBER_TOKEN) {
         return token.value;
@@ -44,6 +46,7 @@ static double parse_primary_expression() {
             fprintf(stderr, "missing ')' error.\n");
             exit(1);
         }
+        return value;
     }
     fprintf(stderr, "syntax error.\n");
     exit(1);

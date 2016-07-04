@@ -91,7 +91,6 @@ void get_token(Token *token) {
             token->kind = RIGHT_PAREN_TOKEN;
             return;
         }else {
-        }
             fprintf(stderr, "bad character(%c)\n", current_char);
             exit(1);
         }
