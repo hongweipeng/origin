@@ -84,7 +84,14 @@ void get_token(Token *token) {
             if (status == IN_INT_PART_STATUS) {
                 status = DOT_STATUS;
             }
+        }else if (current_char == '(') {
+            token->kind = LEFT_PAREN_TOKEN;
+            return;
+        }else if (current_char == ')') {
+            token->kind = RIGHT_PAREN_TOKEN;
+            return;
         }else {
+        }
             fprintf(stderr, "bad character(%c)\n", current_char);
             exit(1);
         }

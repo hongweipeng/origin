@@ -24,6 +24,7 @@ static void my_get_token(Token *token) {
     }
 }
 
+// 将记号回退
 static void unget_token(Token *token) {
     st_look_ahead_token = *token;
     st_look_ahead_token_exists = 1;
@@ -36,6 +37,13 @@ static double parse_primary_expression() {
     my_get_token(&token);
     if (token.kind == NUMBER_TOKEN) {
         return token.value;
+    }else if (token.kind == LEFT_PAREN_TOKEN) {   //遇到括号的情况，解析括号内的表达式，返回double
+        value = parse_expression();
+        my_get_token(&token);
+        if (token.kind != RIGHT_PAREN_TOKEN) {  //如果没有)匹配
+            fprintf(stderr, "missing ')' error.\n");
+            exit(1);
+        }
     }
     fprintf(stderr, "syntax error.\n");
     exit(1);
@@ -49,7 +57,7 @@ static double parse_term() {
 
     v1 = parse_primary_expression();
     for (;;) {
-        my_get_token(&token);
+        my_get_token(&token);//如果始终保持预读，这行可以省略
         if (token.kind != MUL_OPERATOR_TOKEN && token.kind != DIV_OPERATOR_TOKEN) {
             unget_token(&token);
             break;

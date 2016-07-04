@@ -10,6 +10,8 @@ typedef enum {
 	SUB_OPERATOR_TOKEN, // - 号标识
 	MUL_OPERATOR_TOKEN, // * 号标识
 	DIV_OPERATOR_TOKEN, // / 号标识
+	LEFT_PAREN_TOKEN,   // ( 号标识
+	RIGHT_PAREN_TOKEN,  // ) 号标识
 	END_OF_LINE_TOKEN,
 }TokenKind;
 
