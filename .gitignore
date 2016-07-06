@@ -2,5 +2,6 @@
 *.output
 *.tab.c
 *.tab.h
+/**/lex.yy.c
 .idea/
 CMakeLists.txt
