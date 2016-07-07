@@ -8,4 +8,13 @@
 #ifndef _ORG_H
 #define _ORG_H
 
+#include <stdio.h>
+
+typedef struct ORG_Interpreter_tag ORG_Interpreter;
+
+ORG_Interpreter *ORG_create_interpreter(void);
+void ORG_compile(ORG_Interpreter *interpreter, FILE *fp);
+void ORG_interpret(ORG_Interpreter *interpreter);
+void ORG_dispose_interpreter(ORG_Interpreter *interpreter);
+
 #endif
