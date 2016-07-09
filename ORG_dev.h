@@ -38,8 +38,30 @@ typedef struct {
     void *pointer;
 } ORG_NativePointer;
 
+//通过变量类型
+typedef struct {
+    ORG_ValueType type;
+    union {
+        ORG_Boolean boolean_value;
+        int     int_value;
+        double  double_value;
+        ORG_String *string_value;
+        ORG_NativePointer native_pointer;
+    } u;
+} ORG_Value;
+
+typedef ORG_Value ORG_NativeFunctionPro(ORG_Interpreter *interpreter,
+                                       int arg_count, ORG_Value *argc);
 
 
+//注册函数接口
+void ORG_add_native_function(ORG_Interpreter *interpreter, char *name,
+                            ORG_NativeFunctionPro *proc);
+
+
+//注册全局变量接口
+void ORG_add_global_variable(ORG_Interpreter *interpreter, char *identifier,
+                            ORG_Value *value);
 
 
 
