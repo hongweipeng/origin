@@ -60,8 +60,8 @@ typedef enum {
     GE_EXPRESSION,          // >=
     LT_EXPRESSION,          // <
     LE_EXPRESSION,          // <=
-    LOGIAL_AND_EXPRESSION,  // &&
-    LOGIAL_OR_EXPRESSION,   // ||
+    LOGICAL_AND_EXPRESSION,  // &&
+    LOGICAL_OR_EXPRESSION,   // ||
     MINUS_EXPRESSION,       // 单目取反
     FUNCTION_CALL_EXPRESSION, //函数调用表达式
     NULL_EXPRESSION,        //null表达式
@@ -313,7 +313,7 @@ IdentifierList *org_create_global_identifier(char *identifier);
 IdentifierList *org_chain_identifier(IdentifierList *list, char *identifier);
 
 Statement *org_create_global_statement(IdentifierList *identifier_list);
-IdentifierList *org_create_global_statement(char *identifier);
+IdentifierList *org_create_global_identifier(char *identifier);
 IdentifierList *org_chain_identifier(IdentifierList *list, char *identifier);
 
 //elseif statement

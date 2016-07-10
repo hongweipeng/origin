@@ -74,7 +74,7 @@ StatementList *org_chain_statement_list(StatementList *list, Statement *statemen
         return org_create_statement_list(statement);
     }
 
-    for (pos = list; post->next != NULL; pos = pos->next);
+    for (pos = list; pos->next != NULL; pos = pos->next);
 
     pos->next = org_create_statement_list(statement);
     return list;
@@ -100,7 +100,7 @@ Expression *org_create_assign_expression(char *variable, Expression *operand) {
     return exp;
 }
 
-static Expression conver_value_to_expression(ORG_Value *v) {
+static Expression convert_value_to_expression(ORG_Value *v) {
     Expression expr;
 
     if (v->type == ORG_INT_VALUE) {
@@ -127,7 +127,7 @@ Expression *org_create_binary_expression(ExpressionType op, Expression *left, Ex
         ORG_Value value;
         /* Overwriting left hand expression. */
         value = org_eval_binary_expression(org_get_current_interpreter(), NULL, op, left, right);
-        *left = conver_value_to_expression(&v);
+        *left = convert_value_to_expression(&value);
         return left;
     } else {
         Expression *exp;
