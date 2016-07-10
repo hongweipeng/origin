@@ -9,7 +9,7 @@
 #define _ORIGIN_H
 
 #include <stdio.h>
-//#include "MEM.h"
+#include "MEM.h"
 #include "ORG.h"
 #include "ORG_dev.h"
 
@@ -228,7 +228,7 @@ typedef struct FunctionDefine_tag {
         struct {
             ParameterList       *parameter;
             Block               *block;
-        } crowbar_f;
+        } origin_f;
         struct {
             ORG_NativeFunctionPro     *pro;
         } native_f;
@@ -282,7 +282,7 @@ struct ORG_Interpreter_tag {
     MEM_Storage         interpreter_storage;
     MEM_Storage         execute_storage;
     Variable            *variable;
-    FunctionDefinition  *function_list;
+    FunctionDefine      *function_list;
     StatementList       *statement_list;
     int                 current_line_number;
 };
@@ -294,10 +294,103 @@ ParameterList *org_create_parameter(char *identifier);
 ParameterList *org_chain_parameter(ParameterList *list, char *identifier);
 
 ArgumentList *org_create_argument_list(Expression *expression);
-ArgumentList *org_chain_argument_list()
+ArgumentList *org_chain_argument_list(ArgumentList *list, Expression *expr);
+StatementList *org_create_statement_list(Statement *statement);
+StatementList *org_chain_statement_list(StatementList *list, Statement *statement);
+
+Expression *org_alloc_expression(ExpressionType type);
+Expression *org_create_assign_expression(char *variable, Expression *operand);
+Expression *org_create_binary_expression(ExpressionType op, Expression *left, Expression *right);
+Expression *org_create_minus_expression(Expression *operand);
+Expression *org_create_identifier_expression(char *identifier);
+Expression *org_create_function_call_expression(char *func_name, ArgumentList *argument);
+
+Expression *org_create_boolean_expression(ORG_Boolean value);
+Expression *org_create_null_expression(void);
 
 
+IdentifierList *org_create_global_identifier(char *identifier);
+IdentifierList *org_chain_identifier(IdentifierList *list, char *identifier);
 
+Statement *org_create_global_statement(IdentifierList *identifier_list);
+IdentifierList *org_create_global_statement(char *identifier);
+IdentifierList *org_chain_identifier(IdentifierList *list, char *identifier);
+
+//elseif statement
+Statement *org_create_if_statement(Expression *condition, Block *then_block,
+                                    Elseif *elseif_list, Block *else_block);
+Elseif *org_chain_elseif_statement(Expression *expr, Elseif *add);
+Elseif *org_create_elsif(Expression *expr, Block *block);
+Statement *org_create_while_statement(Expression *condition, Block *block);
+Statement *org_create_for_statement(Expression *init, Expression *cond,
+                                    Expression *post, Block *block);
+Block *org_create_block(StatementList *statement_list);
+Statement *org_create_expression_statement(Expression *expression);
+Statement *org_create_return_statement(Expression *expression);
+Statement *org_create_break_statement(void);
+Statement *org_create_continue_statement(void);
+
+/* string.c */
+char *org_create_identifier(char *str);
+void org_open_string_literal(void);
+void org_add_string_literal(int letter);
+void org_reset_string_literal_buffer(void);
+char *org_close_string_literal(void);
+
+/* execute.c */
+StatementResult org_execute_statement_list(ORG_Interpreter *inter,
+                                   LocalEnvironment *env, StatementList *list);
+
+/* execute.c */
+StatementResult org_execute_statement_list(ORG_Interpreter *inter,
+                                   LocalEnvironment *env, StatementList *list);
+
+/* eval.c */
+ORG_Value org_eval_binary_expression(ORG_Interpreter *inter,
+                                     LocalEnvironment *env,
+                                     ExpressionType op,
+                                     Expression *left, Expression *right);
+ORG_Value org_eval_minus_expression(ORG_Interpreter *inter,
+                                    LocalEnvironment *env, Expression *operand);
+ORG_Value org_eval_expression(ORG_Interpreter *inter,
+                              LocalEnvironment *env, Expression *expr);
+
+/* string_pool.c */
+ORG_String *org_literal_to_org_string(ORG_Interpreter *inter, char *str);
+void org_refer_string(ORG_String *str);
+void org_release_string(ORG_String *str);
+ORG_String *org_search_org_string(ORG_Interpreter *inter, char *str);
+ORG_String *org_create_crowbar_string(ORG_Interpreter *inter, char *str);
+
+/* util.c */
+ORG_Interpreter *org_get_current_interpreter(void);
+void org_set_current_interpreter(ORG_Interpreter *inter);
+void *org_malloc(size_t size);
+void *org_execute_malloc(ORG_Interpreter *inter, size_t size);
+Variable *org_search_local_variable(LocalEnvironment *env,
+                                    char *identifier);
+Variable *org_search_global_variable(ORG_Interpreter *inter, char *identifier);
+void org_add_local_variable(LocalEnvironment *env, char *identifier, ORG_Value *value);
+ORG_NativeFunctionPro *org_search_native_function(ORG_Interpreter *inter, char *name);
+FunctionDefine *org_search_function(char *name);
+char *org_get_operator_string(ExpressionType type);
+
+/* error.c */
+void org_compile_error(CompileError id, ...);
+void org_runtime_error(int line_number, RuntimeError id, ...);
+
+/* native.c */
+ORG_Value org_nv_print_proc(ORG_Interpreter *interpreter,
+                            int arg_count, ORG_Value *args);
+ORG_Value org_nv_fopen_proc(ORG_Interpreter *interpreter,
+                            int arg_count, ORG_Value *args);
+ORG_Value org_nv_fclose_proc(ORG_Interpreter *interpreter,
+                             int arg_count, ORG_Value *args);
+ORG_Value org_nv_fgets_proc(ORG_Interpreter *interpreter,
+                            int arg_count, ORG_Value *args);
+ORG_Value org_nv_fputs_proc(ORG_Interpreter *interpreter,
+                            int arg_count, ORG_Value *args);
+void org_add_std_fp(ORG_Interpreter *inter);
 
 
 
