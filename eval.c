@@ -50,7 +50,11 @@ static void refer_if_string(ORG_Value *v) {
     }
 }
 
-
+static void release_is_string(ORG_Value *v) {
+    if (v->type == ORG_STRING_VALUE) {
+        org_release_string(v->u.string_value);
+    }
+}
 
 
 
