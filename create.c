@@ -6,6 +6,8 @@
  ************************************************************************/
 
 #include "origin.h"
+
+//创建函数
 void org_function_define(char *identifier, ParameterList *parameter_list, Block *block) {
     FunctionDefine *fun;
     ORG_Interpreter *inter;
@@ -26,6 +28,7 @@ void org_function_define(char *identifier, ParameterList *parameter_list, Block 
     inter->function_list = fun;
 }
 
+//创建参数
 ParameterList *org_create_parameter(char *identifier) {
     ParameterList *p;
     p = org_malloc(sizeof(ParameterList));
@@ -42,6 +45,7 @@ ParameterList *org_chain_parameter(ParameterList *list, char *identifier) {
     return list;
 }
 
+//创建参数列表
 ArgumentList *org_create_argument_list(Expression *expression) {
     ArgumentList *al;
     al = org_malloc(sizeof(ArgumentList));
@@ -58,7 +62,7 @@ ArgumentList *org_chain_argument_list(ArgumentList *list, Expression *expr) {
     return list;
 }
 
-//create statement
+//创建语句 数组
 StatementList *org_create_statement_list(Statement *statement) {
     StatementList *sl;
     sl = org_alloc_expression(sizeof(StatementList));
@@ -80,7 +84,7 @@ StatementList *org_chain_statement_list(StatementList *list, Statement *statemen
     return list;
 }
 
-//Expression
+//申请存放表达式的地址空间
 Expression *org_alloc_expression(ExpressionType type) {
     Expression *exp;
     exp = org_malloc(sizeof(Expression));
@@ -90,6 +94,7 @@ Expression *org_alloc_expression(ExpressionType type) {
     return exp;
 }
 
+//创建赋值表达式
 Expression *org_create_assign_expression(char *variable, Expression *operand) {
     Expression *exp;
 
@@ -100,6 +105,7 @@ Expression *org_create_assign_expression(char *variable, Expression *operand) {
     return exp;
 }
 
+//表达式换算 把任意类型换成表达式形式
 static Expression convert_value_to_expression(ORG_Value *v) {
     Expression expr;
 
@@ -120,6 +126,7 @@ static Expression convert_value_to_expression(ORG_Value *v) {
 
 }
 
+//创建二元表达式
 Expression *org_create_binary_expression(ExpressionType op, Expression *left, Expression *right) {
     if ((left->type == INT_EXPRESSION || left->type == DOUBLE_EXPRESSION)
             && (right->type == INT_EXPRESSION || right == DOUBLE_EXPRESSION)) {
@@ -138,6 +145,7 @@ Expression *org_create_binary_expression(ExpressionType op, Expression *left, Ex
     }
 }
 
+//创建 单元取反 表达式
 Expression *org_create_minus_expression(Expression *operand) {
     if (operand->type == INT_EXPRESSION || operand->type == DOUBLE_EXPRESSION) {
         ORG_Value v;
@@ -153,6 +161,7 @@ Expression *org_create_minus_expression(Expression *operand) {
     }
 }
 
+//变量表达式
 Expression *org_create_identifier_expression(char *identifier) {
     Expression *exp;
     exp = org_alloc_expression(IDENTIFIER_EXPRESSION);
@@ -160,6 +169,7 @@ Expression *org_create_identifier_expression(char *identifier) {
     return exp;
 }
 
+//函数表达式
 Expression *org_create_function_call_expression(char *fun_name, ArgumentList *argument) {
     Expression *exp;
     exp = org_alloc_expression(FUNCTION_CALL_EXPRESSION);
@@ -169,13 +179,15 @@ Expression *org_create_function_call_expression(char *fun_name, ArgumentList *ar
     return exp;
 }
 
+// null 表达式
 Expression *org_create_null_expression(void) {
     Expression *exp;
     exp = org_alloc_expression(NULL_EXPRESSION);
     return exp;
 }
 
-// statement
+/* statement */
+//申请语句内存空间
 static Statement *org_alloc_statement(StatementType type) {
     Statement *st;
     st = org_malloc(sizeof(Statement));
@@ -185,6 +197,7 @@ static Statement *org_alloc_statement(StatementType type) {
     return st;
 }
 
+//全局语句
 Statement *org_create_global_statement(IdentifierList *identifier_list) {
     Statement *st;
     st = org_alloc_statement(GLOBAL_STATEMENT);
@@ -193,6 +206,7 @@ Statement *org_create_global_statement(IdentifierList *identifier_list) {
     return st;
 }
 
+//创建全局变量
 IdentifierList *org_create_global_identifier(char *identifier) {
     IdentifierList *i_list;
     i_list = org_malloc(sizeof(IdentifierList));
@@ -209,6 +223,7 @@ IdentifierList *org_chain_identifier(IdentifierList *list, char *identifier) {
     pos->next = org_create_global_identifier(identifier);
 }
 
+//if语句
 Statement *org_create_if_statement(Expression *condition, Block *then_block,
                                    Elseif *elseif_list, Block *else_block) {
 
@@ -223,6 +238,7 @@ Statement *org_create_if_statement(Expression *condition, Block *then_block,
     return st;
 }
 
+//elseif 语句
 Elseif *org_create_elseif(Expression *condition, Block *block) {
     Elseif *ei;
     ei = org_malloc(sizeof(Elseif));
@@ -241,6 +257,7 @@ Elseif *org_chain_elseif_list(Elseif *list, Elseif *add) {
     return list;
 }
 
+//while 语句
 Statement *org_create_while_statement(Expression *condition, Block *block) {
     Statement *st;
     st = org_alloc_statement(WHILE_STATEMENT);
@@ -250,6 +267,7 @@ Statement *org_create_while_statement(Expression *condition, Block *block) {
     return st;
 }
 
+// for 语句
 Statement *org_create_for_statement(Expression *init, Expression *condition, Expression *post, Block *block) {
     Statement *st;
     st = org_alloc_statement(FOR_STATEMENT);
@@ -261,6 +279,7 @@ Statement *org_create_for_statement(Expression *init, Expression *condition, Exp
     return st;
 }
 
+// 创建块段
 Block *org_create_block(StatementList *statement_list) {
     Block *block;
     block = org_malloc(sizeof(Block));
@@ -268,6 +287,7 @@ Block *org_create_block(StatementList *statement_list) {
     return block;
 }
 
+// 创建表达式语句
 Statement *org_create_expression_statement(Expression *expression) {
     Statement *st;
     st = org_alloc_statement(EXPRESSION_STATEMENT);
@@ -275,6 +295,7 @@ Statement *org_create_expression_statement(Expression *expression) {
     return st;
 }
 
+// return 语句
 Statement *org_create_return_statement(Expression *expression) {
     Statement *st;
     st = org_alloc_statement(RETURN_STATEMENT);
@@ -282,26 +303,17 @@ Statement *org_create_return_statement(Expression *expression) {
     return st;
 }
 
+// break 语句
 Statement *org_create_break_statement(void) {
     Statement *st;
     st = org_alloc_statement(BREAK_STATEMENT);
     return st;
 }
 
+// continue 语句
 Statement *org_create_continue_statement(void) {
     Statement *st;
     st = org_alloc_statement(CONTINUE_STATEMENT);
     return st;
 }
-
-
-
-
-
-
-
-
-
-
-
 
