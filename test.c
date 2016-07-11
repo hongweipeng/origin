@@ -7,5 +7,8 @@
 
 #include "origin.h"
 int main(int argc, char **argv) {
+    for (int i = 8; i < 1; i++) {
+        printf("ffff");
+    }
     return 0;
 }

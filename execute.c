@@ -151,3 +151,76 @@ static StatementResult execute_while_statement(ORG_Interpreter *inter, LocalEnvi
 
     return result;
 }
+
+static StatementResult execute_for_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
+    StatementResult result;
+    ORG_Value cond;
+    result = NORMAL_STATEMENT_RESULT;
+    if (statement->u.for_s.init) {
+        org_eval_expression(inter, env, statement->u.for_s.init);
+    }
+    for (;;) {
+        //for的判断循环条件 
+        if (statement->u.for_s.condition) {
+            cond = org_eval_expression(statement->u.for_s.condition);
+            if (cond.type != ORG_BOOLEAN_VALUE) {
+                //runtime error
+                exit(1);
+            }
+            if (!cond.u.boolean_value) {
+                break;
+            }
+        }
+
+        result = org_execute_statement_list(inter, env, statement->u.for_s.block->statement_list);
+        if (result.type == RETURN_STATEMENT_RESULT) {
+            break;
+        } else if (result.type == BREAK_STATEMENT_RESULT) {
+            result.type = NORMAL_STATEMENT_RESULT;
+            break;
+        }
+
+        if (statement->u.for_s.post) {
+            org_eval_expression(inter, env, statement->u.for_s.post);
+        }
+    }
+    return result;
+}
+
+static StatementResult execute_return_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
+    StatementResult result;
+
+    result.type = RETURN_STATEMENT_RESULT;
+    if(statement->u.return_s.return_value) {
+        result.u.return_value = org_eval_expression(inter, env, statement->u.return_s.return_value);
+    } else {
+        result.u.return_value.type = ORG_NULL_VALUE;
+    }
+
+    return result;
+}
+
+static StatementResult execute_break_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
+    StatementResult result;
+    result.type = BREAK_STATEMENT_RESULT;
+    return result;
+}
+
+static  StatementResult execute_continue_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
+    StatementResult result;
+    result.type = CONTINUE_STATEMENT_RESULT;
+    return result;
+}
+
+static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
+    StatementResult result;
+    result.type = NORMAL_STATEMENT_RESULT;
+    switch (statement->type) {
+        case EXPRESSION_STATEMENT:
+            result = execute_expression_statement(inter, env, statement);
+            break;
+        case :
+    }
+}
+
+
