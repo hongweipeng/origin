@@ -11,12 +11,16 @@
 #include "DBG.h"
 #include "origin.h"
 
+//通用工具包
+
+
 static ORG_Interpreter *st_current_interperter;
 
 ORG_Interpreter *org_get_current_interperter(void) {
     return st_current_interperter;
 }
 
+//获取函数
 FunctionDefine *org_search_function(char *name) {
     FunctionDefine *pos;
     ORG_Interpreter *inter;
@@ -30,6 +34,7 @@ FunctionDefine *org_search_function(char *name) {
     return pos;
 }
 
+//申请内存空间
 void *org_malloc(size_t size) {
     void *p;
     ORG_Interpreter *inter;
@@ -44,6 +49,7 @@ void *org_execute_malloc(ORG_Interpreter *inter, size_t size) {
     return p;
 }
 
+//获取变量
 Variable *org_search_local_variable(LocalEnvironment *env, char *identifier) {
     Variable *pos;
     if (env == NULL) {
@@ -58,6 +64,7 @@ Variable *org_search_local_variable(LocalEnvironment *env, char *identifier) {
     return pos;
 }
 
+//获取全局变量
 Variable *org_search_global_variable(ORG_Interpreter *inter, char *identifier) {
     Variable *pos;
     for (pos = inter->variable; pos != NULL; pos = pos->next) {
@@ -68,6 +75,7 @@ Variable *org_search_global_variable(ORG_Interpreter *inter, char *identifier) {
     return pos;
 }
 
+//添加变量
 void org_add_local_variable(LocalEnvironment *env, char *identifier, ORG_Value *value) {
     Variable *new_variable;
     new_variable = MEM_malloc(sizeof(Variable));
@@ -77,6 +85,7 @@ void org_add_local_variable(LocalEnvironment *env, char *identifier, ORG_Value *
     env->variable = new_variable;
 }
 
+//添加全局变量
 void ORG_add_global_variable(ORG_Interpreter *inter, char *identifier, ORG_Value *value) {
     Variable *new_variable;
     new_variable = org_execute_malloc(inter, sizeof(Variable));

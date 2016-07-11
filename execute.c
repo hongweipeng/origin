@@ -12,8 +12,11 @@
 #include "DBG.h"
 #include "origin.h"
 
+/* 执行模块 */
+
 static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement);
 
+//执行表达式语句
 static StatementResult execute_expression_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     StatementResult result;
     ORG_Value value;
@@ -28,6 +31,7 @@ static StatementResult execute_expression_statement(ORG_Interpreter *inter, Loca
     return result;
 }
 
+//执行全局语句
 static StatementResult execute_global_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     IdentifierList *pos;
     StatementResult result;
@@ -69,6 +73,7 @@ static StatementResult execute_global_statement(ORG_Interpreter *inter, LocalEnv
 
 }
 
+//执行elseif语句
 static StatementResult execute_elseif(ORG_Interpreter *inter, LocalEnvironment *env, Elseif *elseif_list, ORG_Boolean *executed) {
     StatementResult result;
     ORG_Value cond;
@@ -95,6 +100,7 @@ static StatementResult execute_elseif(ORG_Interpreter *inter, LocalEnvironment *
         return result;
 }
 
+//执行if语句
 static StatementResult execute_if_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     StatementResult result;
     ORG_Value cond;
@@ -122,6 +128,7 @@ static StatementResult execute_if_statement(ORG_Interpreter *inter, LocalEnviron
     return result;
 }
 
+//执行while语句
 static StatementResult execute_while_statement(ORG_Interpreter *inter, LocalEnvironment *env,
                         Statement *statement)
 {
