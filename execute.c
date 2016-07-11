@@ -226,8 +226,47 @@ static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironmen
         case EXPRESSION_STATEMENT:
             result = execute_expression_statement(inter, env, statement);
             break;
-        case :
+        case GLOBAL_STATEMENT:
+            result = execute_global_statement(inter, env, statement);
+            break;
+        case IF_STATEMENT:
+            result = execute_if_statement(inter, env, statement);
+            break;
+        case WHILE_STATEMENT:
+            result = execute_while_statement(inter, env, statement);
+            break;
+        case FOR_STATEMENT:
+            result = execute_for_statement(inter, env, statement);
+            break;
+        case RETURN_STATEMENT:
+            result = execute_return_statement(inter, env, statement);
+            break;
+        case BREAK_STATEMENT:
+            result = execute_break_statement(inter, env, statement);
+            break;
+        case CONTINUE_STATEMENT:
+            result = execute_continue_statement(inter, env, statement);
+            break;
+        case STATEMENT_RESULT_TYPE_COUNT_PLUS_1:
+        default:
+            printf("bad case");
     }
+    return result;
 }
 
+//开放,所以以org开头
+StatementResult org_execute_statement_statement_list(ORG_Interpreter *inter, LocalEnvironment *env, StatementList *list) {
+    StatementList *pos;
+    StatementResult result;
+    result.type = NORMAL_STATEMENT_RESULT;
+
+    for (pos = list; pos; pos = pos->next) {
+        result = execute_statement(inter, env, pos->statement);
+        if (result.type == NORMAL_STATEMENT_RESULT) {
+            return result;
+        }
+    }
+
+    return result;
+}
 
