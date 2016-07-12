@@ -7,8 +7,9 @@
 
 #include "origin.h"
 int main(int argc, char **argv) {
-    for (int i = 8; i < 1; i++) {
-        printf("ffff");
-    }
+    ORG_Boolean a = ORG_TRUE;
+    ORG_Boolean b = ORG_TRUE;
+    bool c = true;
+    printf("%d\n", a == b);
     return 0;
 }
