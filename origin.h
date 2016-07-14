@@ -360,7 +360,7 @@ ORG_String *org_literal_to_org_string(ORG_Interpreter *inter, char *str);
 void org_refer_string(ORG_String *str);
 void org_release_string(ORG_String *str);
 ORG_String *org_search_org_string(ORG_Interpreter *inter, char *str);
-ORG_String *org_create_crowbar_string(ORG_Interpreter *inter, char *str);
+ORG_String *org_create_origin_string(ORG_Interpreter *inter, char *str);
 
 /* util.c */
 ORG_Interpreter *org_get_current_interpreter(void);

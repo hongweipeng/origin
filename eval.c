@@ -319,11 +319,102 @@ static ORG_Boolean eval_binary_null(ORG_Interpreter *inter, ExpressionType op, O
 
 ORG_String *chain_string(ORG_Interpreter *inter, ORG_String *left, ORG_String *right) {
     //like  "123" + "adc"
-    int len = strlen(left->string) + strlen(right->string);
+    int len;
     char *str;
     ORG_String *ret;
+
+    len = strlen(left->string) + strlen(right->string);
+    str = MEM_malloc(len + 1);
+    strcpy(str, left->string);
+    strcat(str, right->string);
+    ret = org_create_origin_string(inter, str);
+
+    org_release_string(left->string);
+    org_release_string(right->string);
+    return ret;
 }
 
+ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *env,
+                                     ExpressionType op, Expression *left, Expression *right) {
+
+    ORG_Value left_val;
+    ORG_Value right_val;
+    ORG_Value result;
+
+    left_val = eval_expression(iner, env, left);
+    right_val = eval_expression(inter, env, right);
+
+
+    /**
+     * 对于加法运算
+     * 1 整数 + 整数   返回整数
+     * 2 实数 + 实数   返回实数
+     * 3 整数 + 实数   左边转换为实数
+     * 4 实数 + 整数   右边转换为实数
+     * 5 字符串 + 字符串 返回连接后的字符串
+     * 6 字符串 + 整数   右边转换为字符串
+     * 7 字符串 + 实数    右边转换为字符串
+     * 8 字符串 + 布尔    右边转换为true或false的字符串
+     * 9 字符串 + null    右边转换为null的字符串
+     */
+    if (left_val.type == ORG_INT_VALUE && right_val.type == ORG_INT_VALUE) { //  1 + 2
+        eval_binary_int(inter, op, left_val.u.int_value, right_val.u.int_value, &result, left->line_number);
+    } else if (left_val.type == ORG_DOUBLE_VALUE && right_val.type == ORG_DOUBLE_VALUE) { // 1.0 + 2.3
+        eval_binary_double(inter, op , left_val.u.double_value, right_val.u.double_value, &result, left->line_number);
+    } else if (left_val.type == ORG_INT_VALUE && right_val.type == ORG_DOUBLE_VALUE) { // 1 + 2.0
+        left_val.u.double_value = (double) left_val.u.int_value;
+        eval_binary_double(inter, op , left_val.u.double_value, right_val.u.double_value, &result, left->line_number);
+    } else if (left_val.type == ORG_DOUBLE_VALUE && right_val.type == ORG_INT_VALUE) { // 3.0 + 1
+        right_val.u.double_value = (double) right_val.u.int_value;
+        eval_binary_double(inter, op , left_val.u.double_value, right_val.u.double_value, &result, left->line_number);
+    } else if (left_val.type == ORG_STRING_VALUE && op == ADD_EXPRESSION) {
+        char buf[LINE_BUF_SIZE];
+        ORG_String *right_str;
+
+        if (right_val.type == ORG_INT_VALUE) {
+            sprintf(buf, "%d", right_val.u.int_value);
+            right_str = org_create_origin_string(inter, MEM_strdum(buf));
+        } else if(right_val.type == ORG_DOUBLE_VALUE) {
+            sprintf(buf, "%lf", right_val.u.double_value);
+            right_str = org_create_origin_string(inter, MEM_strdum(buf));
+        } else if (right_val.type == ORG_BOOLEAN_VALUE) {
+            right_str = (right_val.u.boolean_value) ? org_create_origin_string(inter, MEM_strdup("true")) : org_create_origin_string(inter, MEM_strdup("false"));
+        } else if (right_val.type == ORG_STRING_VALUE) {
+            right_str = right_val.u.string_value;
+        }
+
+        result.type = ORG_STRING_VALUE;
+        result.u.string_value = chain_string(inter, left_val.u.string_value, right_str);
+    } else if (left_val.type == ORG_BOOLEAN_VALUE && right_val.type == ORG_BOOLEAN_VALUE) {
+        //
+
+        result.type = ORG_BOOLEAN_VALUE;
+        result.u.boolean_value = eval_binary_boolean(inter, op, left_val.u.boolean_value, right_val.u.boolean_value, left->line_number);
+    } else if (left_val.type == ORG_STRING_VALUE && right_val.type == ORG_STRING_VALUE) {
+        // "12" > "abc"
+        result.type == ORG_BOOLEAN_VALUE;
+        result.u.boolean_value = eval_compare_string(op, &left_val, &right_val, left->line_number);
+    } else if (left_val.type == ORG_NULL_VALUE || right_val.type == ORG_NULL_VALUE) {
+        result.type = ORG_NULL_VALUE;
+        result.u.boolean_value = eval_binary_null(inter, op, &left_val, &right_val);
+    } else {
+        char *op_str = org_get_operator_string(op);
+        //runtime error
+        exit(1);
+    }
+
+    return result;
+
+}
+
+static ORG_Value eval_logical_and_or_express(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op, Expression *left, Expression *right) {
+    ORG_Value left_val;
+    ORG_Value right_val;
+    ORG_Value result;
+
+    result.type = ORG_BOOLEAN_VALUE;
+    left_val = eval_expression(inter, env, left);
+}
 
 
 
