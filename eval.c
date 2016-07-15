@@ -97,7 +97,7 @@ static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, 
 /**
  * identifier
  */
-static ORG_Value eval_assgin_expression(ORG_Interpreter *inter, LocalEnvironment *env, char *identifier, Expression *expression) {
+static ORG_Value eval_assign_expression(ORG_Interpreter *inter, LocalEnvironment *env, char *identifier, Expression *expression) {
     ORG_Value v;
     Variable *left;
     v = eval_expression(inter, env, expression);
@@ -407,6 +407,7 @@ ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *e
 
 }
 
+// 布尔运算 支持短路求值
 static ORG_Value eval_logical_and_or_express(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op, Expression *left, Expression *right) {
     ORG_Value left_val;
     ORG_Value right_val;
@@ -414,15 +415,149 @@ static ORG_Value eval_logical_and_or_express(ORG_Interpreter *inter, LocalEnviro
 
     result.type = ORG_BOOLEAN_VALUE;
     left_val = eval_expression(inter, env, left);
+
+    if (left_val.type != ORG_BOOLEAN_VALUE) {
+        //runtime error
+        exit(1);
+    }
+
+    if (op == LOGICAL_AND_EXPRESSION) {
+        if (!left_val.u.boolean_value) {
+            result.u.boolean_value = ORG_FALSE;
+            return result;//短路求值
+        }
+    } else if (op == LOGICAL_OR_EXPRESSION) {
+        if (left_val.u.boolean_value) {
+            result.u.boolean_value = ORG_TRUE;
+            return result;
+        }
+    } else {
+        //debug 不是布尔运算符
+    }
+
+    right_val = eval_expression(inter, env, right);
+    if (right_val.type != ORG_BOOLEAN_VALUE) {
+        //runtime error
+        exit(1);
+    }
+
+    result.u.boolean_value = right_val.u.boolean_value;
+    return result;
 }
 
+// 单元取反
+ORG_Value org_eval_minus_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *operand) {
+    ORG_Value operand_val; //操作数
+    ORG_Value result;
 
+    operand_val = eval_expression(inter, env, operand);
+    if (operand_val.type == ORG_INT_VALUE) {
+        result.type = ORG_INT_VALUE;
+        result.u.int_value = - operand_val.u.int_value;
+    } else if (operand_val.type == ORG_DOUBLE_VALUE) {
+        result.type = ORG_DOUBLE_VALUE;
+        result.u.double_value = -operand_val.u.double_value;
+    } else {
+        //runtime error
+        exit(1);
+    }
+    return result;
+}
 
+static LocalEnvironment *alloc_local_environment() {
+    LocalEnvironment *ret;
+    ret = MEM_malloc(sizeof(LocalEnvironment));
+    ret->variable = NULL;
+    ret->global_variable = NULL;
+    return ret;
+}
 
+//处理
+static void dispose_local_environment(ORG_Interpreter *inter, LocalEnvironment *env) {
+    while (env->variable) {
+        Variable *temp;
+        temp = env->variable;
+        if (env->variable->value.type == ORG_STRING_VALUE) {
+            org_release_string(env->variable->value.u.string_value);
+        }
+        env->variable = temp->next;
+        MEM_free(temp);
+    }
 
+    while (env->global_variable) {
+        GlobalVariableRef *ref;
+        ref = env->global_variable;
+        env->global_variable = ref->next;
+        MEM_free(ref);
+    }
 
+    MEM_free(env);
+}
 
+static ORG_Value call_native_function(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr, ORG_NativeFunctionPro *proc) {
+    //proc 是个函数指针
+    ORG_Value value;
+    int arg_count;
+    ArgumentList *arg_p;
+    ORG_Value *args;
+    int i;
 
+    for (arg_count = 0, arg_p = expr->u.function_call_expression.argument; arg_p; arg_p = arg_p->next) {
+        arg_count++;
+    }
+
+    args = MEM_malloc(sizeof(ORG_Value) * arg_count);
+
+    for (i = 0, arg_p = expr->u.function_call_expression.argument; arg_p; arg_p = arg_p->next) {
+        args[i] = eval_expression(inter, env, arg_p->expression);
+        i++;
+    }
+    value = proc(inter, arg_count, args);
+    for (i = 0; i < arg_count; i++) {
+        release_if_string(&args[i]);
+    }
+    MEM_free(args);
+
+    return value;
+}
+
+static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr, FunctionDefine *func) {
+    ORG_Value value;
+    StatementResult result;
+    ArgumentList *arg_p;
+    ParameterList *param_p;
+    LocalEnvironment *local_env;
+
+    local_env = alloc_local_environment();
+
+    for (arg_p = expr->u.function_call_expression.argument, param_p = func->u.origin_f.parameter;
+            arg_p;
+            arg_p = arg_p->next, param_p = param_p->next) {
+
+        ORG_Value arg_val;
+        if (param_p == NULL) {
+            //runtime error
+            exit(1);
+        }
+        arg_val = eval_expression(inter, env, arg_p->expression);
+        org_add_local_variable(local_env, param_p->name, &arg_val);
+    }
+
+    if (param_p) {
+        //runtime error
+        exit(1);
+    }
+    result = org_execute_statement_list(inter, env, func->u.origin_f.block->statement_list);
+
+    if (result.type == RETURN_STATEMENT_RESULT) {
+        value = result.u.return_value;
+    } else {
+        //若函数没有return，则默认有null的返回
+        value.type = ORG_NULL_VALUE;
+    }
+    dispose_local_environment(inter, local_env);
+    return value;
+}
 
 
 
