@@ -21,7 +21,7 @@
 
 //编译时报错的类型
 typedef enum {
-    PAESE_ERR = 1,
+    PARSE_ERR = 1,
     CHARACTER_INVALID_ERR,
 }CompileError;
 
@@ -217,7 +217,7 @@ typedef struct ParameterList_tag {
 
 // function type
 typedef enum {
-    ORIGIN_FUNCTION_DEF = 1,
+    ORIGIN_FUNCTION_DEF = 1,//语言自带的函数
     NATIVE_FUNCTION_DEF,
 } FunctionDefineType;
 
@@ -269,9 +269,9 @@ typedef struct {
 } LocalEnvironment;
 
 struct ORG_String_tag {
-    int     ref_count;
-    char    *string;
-    ORG_Boolean is_literal;
+    int     ref_count;      //引用计数
+    char    *string;        // 字符串本身
+    ORG_Boolean is_literal; // 是否是字面常量
 };
 
 typedef struct {
@@ -338,17 +338,13 @@ void org_reset_string_literal_buffer(void);
 char *org_close_string_literal(void);
 
 /* execute.c */
-StatementResult org_execute_statement_list(ORG_Interpreter *inter,
-                                   LocalEnvironment *env, StatementList *list);
+StatementResult org_execute_statement_list(ORG_Interpreter *inter, LocalEnvironment *env, StatementList *list);
 
 /* execute.c */
-StatementResult org_execute_statement_list(ORG_Interpreter *inter,
-                                   LocalEnvironment *env, StatementList *list);
+StatementResult org_execute_statement_list(ORG_Interpreter *inter, LocalEnvironment *env, StatementList *list);
 
 /* eval.c */
-ORG_Value org_eval_binary_expression(ORG_Interpreter *inter,
-                                     LocalEnvironment *env,
-                                     ExpressionType op,
+ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op,
                                      Expression *left, Expression *right);
 ORG_Value org_eval_minus_expression(ORG_Interpreter *inter,
                                     LocalEnvironment *env, Expression *operand);
@@ -367,8 +363,7 @@ ORG_Interpreter *org_get_current_interpreter(void);
 void org_set_current_interpreter(ORG_Interpreter *inter);
 void *org_malloc(size_t size);
 void *org_execute_malloc(ORG_Interpreter *inter, size_t size);
-Variable *org_search_local_variable(LocalEnvironment *env,
-                                    char *identifier);
+Variable *org_search_local_variable(LocalEnvironment *env, char *identifier);
 Variable *org_search_global_variable(ORG_Interpreter *inter, char *identifier);
 void org_add_local_variable(LocalEnvironment *env, char *identifier, ORG_Value *value);
 ORG_NativeFunctionPro *org_search_native_function(ORG_Interpreter *inter, char *name);
@@ -380,16 +375,11 @@ void org_compile_error(CompileError id, ...);
 void org_runtime_error(int line_number, RuntimeError id, ...);
 
 /* native.c */
-ORG_Value org_nv_print_proc(ORG_Interpreter *interpreter,
-                            int arg_count, ORG_Value *args);
-ORG_Value org_nv_fopen_proc(ORG_Interpreter *interpreter,
-                            int arg_count, ORG_Value *args);
-ORG_Value org_nv_fclose_proc(ORG_Interpreter *interpreter,
-                             int arg_count, ORG_Value *args);
-ORG_Value org_nv_fgets_proc(ORG_Interpreter *interpreter,
-                            int arg_count, ORG_Value *args);
-ORG_Value org_nv_fputs_proc(ORG_Interpreter *interpreter,
-                            int arg_count, ORG_Value *args);
+ORG_Value org_nv_print_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Value *args);
+ORG_Value org_nv_fopen_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Value *args);
+ORG_Value org_nv_fclose_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Value *args);
+ORG_Value org_nv_fgets_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Value *args);
+ORG_Value org_nv_fputs_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Value *args);
 void org_add_std_fp(ORG_Interpreter *inter);
 
 

@@ -72,18 +72,22 @@ static Variable *search_global_variable_form_env(ORG_Interpreter *inter, LocalEn
     return NULL;
 }
 
+//变量名出现在表达式中,此函数被调用
 static ORG_Value eval_identifier_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
     ORG_Value v;
     Variable *vp;
 
+    //首先查找局部变量
     vp = org_search_local_variable(inter, env, expr->u.identifier);
     if (vp != NULL) {
         v = vp->value;
     } else {
+        //如果没有,则通过全局查找
         vp = search_global_variable_form_env(inter, env, expr->u.identifier);
         if (vp != NULL) {
             v = vp->value;
         } else {
+            //仍然没有则报错
             //runtime error
             exit(1);
         }
@@ -95,16 +99,20 @@ static ORG_Value eval_identifier_expression(ORG_Interpreter *inter, LocalEnviron
 static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr);
 
 /**
+ * 变量赋值时调用
  * identifier
  */
 static ORG_Value eval_assign_expression(ORG_Interpreter *inter, LocalEnvironment *env, char *identifier, Expression *expression) {
     ORG_Value v;
     Variable *left;
+
+    //获得右侧表达式结果
     v = eval_expression(inter, env, expression);
 
+    //查找局部变量
     left = org_search_local_variable(env, identifier);
 
-    if (left == NULL) {
+    if (left == NULL) {//找不到在全局查找
         left = search_global_variable_form_env(inter, env, identifier);
     }
 
@@ -112,13 +120,15 @@ static ORG_Value eval_assign_expression(ORG_Interpreter *inter, LocalEnvironment
         release_if_string(&left->value);
         left->value = v;
         refer_if_string(&v);
-    } else {
+    } else { // 没有找到变量,注册新的变量
         if (env != NULL) {
+            // 函数内的布局变量
             org_add_local_variable(env, identifier, &v);
         } else {
+            // 函数外的全局变量
             ORG_add_global_variable(inter, identifier, &v);
         }
-        //refer_if_string(&v);
+        refer_if_string(&v);
     }
     return v;
 }
@@ -334,6 +344,9 @@ ORG_String *chain_string(ORG_Interpreter *inter, ORG_String *left, ORG_String *r
     return ret;
 }
 
+/**
+ * 函数对所有二元运算进行评估
+ */
 ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *env,
                                      ExpressionType op, Expression *left, Expression *right) {
 
@@ -521,6 +534,7 @@ static ORG_Value call_native_function(ORG_Interpreter *inter, LocalEnvironment *
     return value;
 }
 
+// 函数调用
 static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr, FunctionDefine *func) {
     ORG_Value value;
     StatementResult result;
@@ -528,14 +542,19 @@ static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *
     ParameterList *param_p;
     LocalEnvironment *local_env;
 
+    //开辟空间用于存放被调用的函数的局部变量
     local_env = alloc_local_environment();
-
+    /**
+     * 对参数进行评估,并用于存放到函数的局部变量中
+     * arg_p : 指向函数调用的实参链表
+     * param_p : 指向函数定义的形参链表
+     */
     for (arg_p = expr->u.function_call_expression.argument, param_p = func->u.origin_f.parameter;
             arg_p;
             arg_p = arg_p->next, param_p = param_p->next) {
 
         ORG_Value arg_val;
-        if (param_p == NULL) {
+        if (param_p == NULL) { // param_p被用尽,说明实参过多
             //runtime error
             exit(1);
         }
@@ -543,10 +562,11 @@ static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *
         org_add_local_variable(local_env, param_p->name, &arg_val);
     }
 
-    if (param_p) {
+    if (param_p) { // param_p 剩余,说明实参数量不够
         //runtime error
         exit(1);
     }
+    //执行函数内部的语句
     result = org_execute_statement_list(inter, env, func->u.origin_f.block->statement_list);
 
     if (result.type == RETURN_STATEMENT_RESULT) {
@@ -558,6 +578,99 @@ static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *
     dispose_local_environment(inter, local_env);
     return value;
 }
+
+/**
+ * 调用函数时执行
+ */
+static ORG_Value eval_function_call_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
+    ORG_Value value;
+    FunctionDefine *func;
+
+    char *identifier = expr->u.function_call_expression.identifier;
+    func = org_search_function(identifier);
+    if (func == NULL) {
+        //runtime error
+        exit(1);
+    }
+
+    switch (func->type) {
+        case ORIGIN_FUNCTION_DEF:
+            value = call_origin_function(inter, env, func);
+            break;
+        case NATIVE_FUNCTION_DEF:
+            value = call_native_function(inter,env,expr, func->u.native_f.pro);
+            break;
+        default:
+            break;
+    }
+
+    return value;
+}
+
+// 运行表达式 或者表达式结果
+static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
+    ORG_Value v;
+    switch (expr->type) {
+        case BOOLEAN_EXPRESSION:
+            v = eval_boolean_expression(expr->u.boolean_value);
+            break;
+        case INT_EXPRESSION:
+            v = eval_int_expression(expr->u.int_value);
+            break;
+        case DOUBLE_EXPRESSION:
+            v = eval_double_expression(expr->u.double_value);
+            break;
+        case STRING_EXPRESSION:
+            v = eval_string_expression(inter, expr->u.string_value);
+            break;
+        case IDENTIFIER_EXPRESSION:
+            v = eval_identifier_expression(inter, env, expr);
+            break;
+        case ASSIGN_EXPRESSION:
+            v = eval_assign_expression(inter, env, expr->u.assign_expression.variable, expr->u.assign_expression.operand);
+            break;
+        case ADD_EXPRESSION:        /* fail */
+        case SUB_EXPRESSION:        /* fail */
+        case MUL_EXPRESSION:        /* fail */
+        case DIV_EXPRESSION:        /* fail */
+        case MOD_EXPRESSION:        /* fail */
+        case EQ_EXPRESSION: /* fail */
+        case NE_EXPRESSION: /* fail */
+        case GT_EXPRESSION: /* fail */
+        case GE_EXPRESSION: /* fail */
+        case LT_EXPRESSION: /* fail */
+        case LE_EXPRESSION:
+            v = org_eval_binary_expression(inter, env, expr->type, expr->u.binary_expression.left, expr->u.binary_expression.right);
+            break;
+        case LOGICAL_AND_EXPRESSION:/* FALLTHRU */
+        case LOGICAL_OR_EXPRESSION:
+            v = eval_logical_and_or_expression(inter, env, expr->type, expr->u.binary_expression.left, expr->u.binary_expression.right);
+            break;
+        case MINUS_EXPRESSION:
+            v = org_eval_minus_expression(inter, env, expr->u.minus_expression);
+            break;
+        case FUNCTION_CALL_EXPRESSION:
+            v = eval_function_call_expression(inter, env, expr);
+            break;
+        case NULL_EXPRESSION:
+            v = eval_null_expression();
+            break;
+        case EXPRESSION_TYPE_COUNT_PLUS_1:  /* FALLTHRU */
+        default:
+            //DBG_panic(("bad case. type..%d\n", expr->type));
+            printf("");
+    }
+    return v;
+}
+
+ORG_Value org_eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
+    return eval_expression(inter, env, expr);
+}
+
+
+
+
+
 
 
 
