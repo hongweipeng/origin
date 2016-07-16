@@ -179,6 +179,14 @@ Expression *org_create_function_call_expression(char *fun_name, ArgumentList *ar
     return exp;
 }
 
+// 布尔类型表达式
+Expression *org_create_boolean_expression(ORG_Boolean value) {
+    Expression *exp;
+    exp = org_alloc_expression(BOOLEAN_EXPRESSION);
+    exp->u.boolean_value = value;
+    return exp;
+}
+
 // null 表达式
 Expression *org_create_null_expression(void) {
     Expression *exp;

@@ -8,6 +8,8 @@
 #ifndef _ORG_DEV_H
 #define _ORG_DEV_H
 
+#include "ORG.h"
+
 //定义布尔类型 c语言没有布尔类型，需要自己定义
 typedef enum {
     ORG_FALSE = 0,
@@ -50,8 +52,7 @@ typedef struct {
     } u;
 } ORG_Value;
 
-typedef ORG_Value ORG_NativeFunctionPro(ORG_Interpreter *interpreter,
-                                       int arg_count, ORG_Value *argc);
+typedef ORG_Value ORG_NativeFunctionPro(ORG_Interpreter *interpreter, int arg_count, ORG_Value *argc);
 
 
 //注册函数接口

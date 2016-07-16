@@ -47,7 +47,7 @@ static StatementResult execute_global_statement(ORG_Interpreter *inter, LocalEnv
         GlobalVariableRef *new_ref;
         Variable *variable;
         for (ref_pos = env->global_variable; ref_pos; ref_pos = ref_pos->next) {
-            if (!strcmp(ref_pos->variable->name), pos->name) {
+            if (!strcmp(ref_pos->variable->name, pos->name)) {
                 goto NEXT_IDENTIFIER;
             }
         }
@@ -106,7 +106,7 @@ static StatementResult execute_if_statement(ORG_Interpreter *inter, LocalEnviron
     ORG_Value cond;
     result.type = NORMAL_STATEMENT_RESULT;
     cond = org_eval_expression(inter, env, statement->u.if_s.condition);
-    if (cond != ORG_BOOLEAN_VALUE) {
+    if (cond.type != ORG_BOOLEAN_VALUE) {
         //runtime error
         printf("runtime error");
         exit(1);
@@ -137,16 +137,16 @@ static StatementResult execute_while_statement(ORG_Interpreter *inter, LocalEnvi
 
     result.type = NORMAL_STATEMENT_RESULT;
     for (;;) {
-        cond = crb_eval_expression(inter, env, statement->u.while_s.condition);
+        cond = org_eval_expression(inter, env, statement->u.while_s.condition);
         if (cond.type != ORG_BOOLEAN_VALUE) {
-            crb_runtime_error(statement->u.while_s.condition->line_number,
-                              NOT_BOOLEAN_TYPE_ERR, MESSAGE_ARGUMENT_END);
+            //crb_runtime_error(statement->u.while_s.condition->line_number,NOT_BOOLEAN_TYPE_ERR, MESSAGE_ARGUMENT_END);
+            exit(1);
         }
 
         if (!cond.u.boolean_value)
             break;
 
-        result = crb_execute_statement_list(inter, env, statement->u.while_s.block->statement_list);
+        result = org_execute_statement_list(inter, env, statement->u.while_s.block->statement_list);
 
         if (result.type == RETURN_STATEMENT_RESULT) {
             break;
@@ -162,14 +162,14 @@ static StatementResult execute_while_statement(ORG_Interpreter *inter, LocalEnvi
 static StatementResult execute_for_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     StatementResult result;
     ORG_Value cond;
-    result = NORMAL_STATEMENT_RESULT;
+    result.type = NORMAL_STATEMENT_RESULT;
     if (statement->u.for_s.init) {
         org_eval_expression(inter, env, statement->u.for_s.init);
     }
     for (;;) {
         //for的判断循环条件 
         if (statement->u.for_s.condition) {
-            cond = org_eval_expression(statement->u.for_s.condition);
+            cond = org_eval_expression(inter, env, statement->u.for_s.condition);
             if (cond.type != ORG_BOOLEAN_VALUE) {
                 //runtime error
                 exit(1);
@@ -248,6 +248,7 @@ static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironmen
             result = execute_continue_statement(inter, env, statement);
             break;
         case STATEMENT_RESULT_TYPE_COUNT_PLUS_1:
+            break;
         default:
             printf("bad case");
     }
@@ -255,7 +256,7 @@ static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironmen
 }
 
 //开放,所以以org开头
-StatementResult org_execute_statement_statement_list(ORG_Interpreter *inter, LocalEnvironment *env, StatementList *list) {
+StatementResult org_execute_statement_list(ORG_Interpreter *inter, LocalEnvironment *env, StatementList *list) {
     StatementList *pos;
     StatementResult result;
     result.type = NORMAL_STATEMENT_RESULT;

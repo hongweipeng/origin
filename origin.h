@@ -72,13 +72,13 @@ typedef enum {
 /* 一些宏定义 */
 
 //判断是否是运算符 采用宏可减少函数调用,节约时间
-#define def_is_match_operator(operator) \
+#define dkc_is_math_operator(operator) \
         ((operator) == ADD_EXPRESSION || (operator) == SUB_EXPRESSION \
         || (operator) == MUL_EXPRESSION || (operator) == DIV_EXPRESSION \
         || (operator) == MOD_EXPRESSION)
 
 //判断是否是判断符
-#define def_is_compare_operator(operator) \
+#define dkc_is_compare_operator(operator) \
         ((operator) == EQ_EXPRESSION || (operator) == NE_EXPRESSION \
         || (operator) == GT_EXPRESSION || (operator) == GE_EXPRESSION \
         || (operator) == LT_EXPRESSION || (operator) == LE_EXPRESSION)
@@ -184,7 +184,7 @@ typedef  struct {
 
 //statement type
 typedef enum {
-    EXPRESSION_STATEMENT = 1,
+    EXPRESSION_STATEMENT = 100,
     GLOBAL_STATEMENT,
     IF_STATEMENT,
     WHILE_STATEMENT,

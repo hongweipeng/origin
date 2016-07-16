@@ -16,8 +16,12 @@
 
 static ORG_Interpreter *st_current_interperter;
 
-ORG_Interpreter *org_get_current_interperter(void) {
+ORG_Interpreter *org_get_current_interpreter(void) {
     return st_current_interperter;
+}
+
+void org_set_current_interpreter(ORG_Interpreter *inter) {
+    st_current_interperter = inter;
 }
 
 //获取函数

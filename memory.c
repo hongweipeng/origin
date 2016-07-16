@@ -136,7 +136,7 @@ void check_mark(Header *header)
 }
 #endif /* DEBUG */
 
-void*MEM_malloc_func(MEM_Controller controller, char *filename, int line, size_t size) {
+void *MEM_malloc_func(MEM_Controller controller, char *filename, int line, size_t size) {
     void        *ptr;
     size_t      alloc_size;
 
@@ -161,8 +161,7 @@ void*MEM_malloc_func(MEM_Controller controller, char *filename, int line, size_t
     return ptr;
 }
 
-void*
-MEM_realloc_func(MEM_Controller controller, char *filename, int line, void *ptr, size_t size) {
+void *MEM_realloc_func(MEM_Controller controller, char *filename, int line, void *ptr, size_t size) {
     void        *new_ptr;
     size_t      alloc_size;
     void        *real_ptr;

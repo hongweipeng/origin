@@ -17,7 +17,7 @@ static ORG_String *alloc_org_string(ORG_Interpreter *inter, char *str, ORG_Boole
 
     ret = MEM_malloc(sizeof(ORG_String));
     ret->ref_count = 0;
-    ret->is_literal is_literal;
+    ret->is_literal = is_literal;
     ret->string = str;
     return  ret;
 }

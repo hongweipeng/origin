@@ -15,7 +15,7 @@ static void add_native_functions(ORG_Interpreter *inter) {
     ORG_add_native_function(inter, "print", org_nv_print_proc);
 }
 
-ORG_Interpreter *ORG_create_interperter(void) {
+ORG_Interpreter *ORG_create_interpreter(void) {
     MEM_Storage storage;
     ORG_Interpreter *interpreter;
 

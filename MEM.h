@@ -7,6 +7,9 @@
 
 #ifndef _MEM_H
 #define _MEM_H
+#include <stdio.h>
+#include <stdlib.h>
+
 typedef enum {
     MEM_FAIL_AND_EXIT,
     MEM_FAIL_AND_RETURN

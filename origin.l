@@ -4,6 +4,8 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include "DBG.h"
+    #include "origin.h"
     #include "y.tab.h"
     
     /*
@@ -11,6 +13,10 @@
     */
     int yywrap(void) {
         return 1;
+    }
+
+    static void increase_line_num(void) {
+        org_get_current_interpreter()->current_line_number++;
     }
 
     //定义保留字
@@ -89,7 +95,7 @@
         buf[0] = yytext[0];
         buf[1] = '\0';
     }else {
-        sprintf(buf, "0x%02x", (unsigned char)yytext[0])
+        sprintf(buf, "0x%02x", (unsigned char)yytext[0]);
     }
     //编译错误
     //org_compile_error();
@@ -105,7 +111,7 @@
 <STRING_LITERAL_STATE>\"    {
     //遇到字符串形如 "this is string\n"
     Expression *expression = org_alloc_expression(STRING_LITERAL_STATE);
-    expression->string_value = org_close_string_literal();
+    expression->u.string_value = org_close_string_literal();
     yylval.expression = expression;
     BEGIN INITIAL;
     return STRING_LITERAL;
