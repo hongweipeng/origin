@@ -263,7 +263,7 @@ StatementResult org_execute_statement_list(ORG_Interpreter *inter, LocalEnvironm
 
     for (pos = list; pos; pos = pos->next) {
         result = execute_statement(inter, env, pos->statement);
-        if (result.type == NORMAL_STATEMENT_RESULT) {
+        if (result.type != NORMAL_STATEMENT_RESULT) {
             return result;
         }
     }
