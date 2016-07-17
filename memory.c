@@ -64,8 +64,8 @@ static void error_handler(MEM_Controller controller, char *filename, int line, c
 MEM_Controller MEM_create_controller(void) {
     MEM_Controller      p;
 
-    p = MEM_malloc_func(&st_default_controller, __FILE__, __LINE__, sizeof(struct MEM_Controller_tag));
-    *p = st_default_controller;
+    p = (MEM_Controller)MEM_malloc_func(&st_default_controller, __FILE__, __LINE__, sizeof(struct MEM_Controller_tag));
+    *p = st_default_controller; //控制器初始化
 
     return p;
 }
@@ -283,7 +283,7 @@ void MEM_set_fail_mode(MEM_Controller controller, MEM_FailMode mode) {
 }
 
 void MEM_dump_blocks_func(MEM_Controller controller, FILE *fp) {
-#ifdef DEBUG
+//#ifdef DEBUG
     Header *pos;
     int counter = 0;
 
@@ -295,7 +295,7 @@ void MEM_dump_blocks_func(MEM_Controller controller, FILE *fp) {
                 pos->s.filename, pos->s.line, pos->s.size);
         counter++;
     }
-#endif /* DEBUG */
+//#endif /* DEBUG */
 }
 
 void MEM_check_block_func(MEM_Controller controller, char *filename, int line, void *p) {
