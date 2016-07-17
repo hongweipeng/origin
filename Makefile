@@ -16,7 +16,7 @@ y.tab.c:origin.y
 	$(YY) -dv origin.y
 
 lex.yy.c:origin.l origin.y y.tab.h
-	flex origin.l
+	lex origin.l
 
 y.tab.o:y.tab.c origin.h MEM.h
 	$(CC) -c $*.c $(INCLUDES)
