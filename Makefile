@@ -8,7 +8,6 @@ INCLUDES = \
 
 $(TARGET):$(OBJS)
 	$(CC) $(OBJS) -o $@ -lm
-	cp $@ tests/
 
 y.tab.h:origin.y
 	$(YY) -dv origin.y
