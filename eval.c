@@ -405,7 +405,7 @@ ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *e
         result.u.boolean_value = eval_binary_boolean(inter, op, left_val.u.boolean_value, right_val.u.boolean_value, left->line_number);
     } else if (left_val.type == ORG_STRING_VALUE && right_val.type == ORG_STRING_VALUE) {
         // "12" > "abc"
-        result.type == ORG_BOOLEAN_VALUE;
+        result.type == ORG_DOUBLE_VALUE;
         result.u.boolean_value = eval_compare_string(op, &left_val, &right_val, left->line_number);
     } else if (left_val.type == ORG_NULL_VALUE || right_val.type == ORG_NULL_VALUE) {
         result.type = ORG_NULL_VALUE;
@@ -658,7 +658,8 @@ static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, 
         case EXPRESSION_TYPE_COUNT_PLUS_1:  /* FALLTHRU */
         default:
             //DBG_panic(("bad case. type..%d\n", expr->type));
-            printf("");
+            //printf("");
+            break;
     }
     return v;
 }
