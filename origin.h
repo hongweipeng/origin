@@ -278,13 +278,14 @@ typedef struct {
     ORG_String *string;
 } StringPool;
 
+//解释器
 struct ORG_Interpreter_tag {
-    MEM_Storage         interpreter_storage;
-    MEM_Storage         execute_storage;
-    Variable            *variable;
-    FunctionDefine      *function_list;
-    StatementList       *statement_list;
-    int                 current_line_number;
+    MEM_Storage         interpreter_storage;    //分析树
+    MEM_Storage         execute_storage;        //运行时
+    Variable            *variable;              //全局变量列表
+    FunctionDefine      *function_list;         //函数定义列表
+    StatementList       *statement_list;        //语句列表
+    int                 current_line_number;    //编译时当前的行号
 };
 
 // create.c

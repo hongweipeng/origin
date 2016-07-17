@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     ORG_interpret(interpreter);
     ORG_dispose_interpreter(interpreter);
 
-    MEM_dump_blocks(stdout);
+    //MEM_dump_blocks(stdout);
 
     return 0;
 }
