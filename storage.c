@@ -22,16 +22,17 @@ typedef union {
 typedef struct MemoryPage_tag MemoryPage;
 typedef MemoryPage *MemoryPageList;
 
+//内存页 每个页里有很多 cell
 struct MemoryPage_tag {
-    int                 cell_num;
-    int                 use_cell_num;
-    MemoryPageList      next;
-    Cell                cell[1];
+    int                 cell_num;       //cell的数量
+    int                 use_cell_num;   //被使用的cell的数量
+    MemoryPageList      next;           //下一页
+    Cell                cell[1];        //实际的提供外面使用的内存块
 };
 
 struct MEM_Storage_tag {
-    MemoryPageList      page_list;
-    int                 current_page_size;
+    MemoryPageList      page_list;      //storage的内存页列表
+    int                 current_page_size;//每个页的页大小
 };
 
 #define larger(a, b) (((a) > (b)) ? (a) : (b))
