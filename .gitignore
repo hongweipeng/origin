@@ -7,3 +7,4 @@ origin
 /**/lex.yy.c
 .idea/
 CMakeLists.txt
+/tests/

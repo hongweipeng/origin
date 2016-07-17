@@ -110,7 +110,7 @@
 
 <STRING_LITERAL_STATE>\"    {
     //遇到字符串形如 "this is string\n"
-    Expression *expression = org_alloc_expression(STRING_LITERAL_STATE);
+    Expression *expression = org_alloc_expression(STRING_EXPRESSION);
     expression->u.string_value = org_close_string_literal();
     yylval.expression = expression;
     BEGIN INITIAL;
