@@ -339,8 +339,8 @@ ORG_String *chain_string(ORG_Interpreter *inter, ORG_String *left, ORG_String *r
     strcat(str, right->string);
     ret = org_create_origin_string(inter, str);
 
-    org_release_string(left->string);
-    org_release_string(right->string);
+    org_release_string(left);
+    org_release_string(right);
     return ret;
 }
 
