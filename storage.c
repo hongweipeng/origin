@@ -61,8 +61,8 @@ void *MEM_storage_malloc_func(MEM_Controller controller, char *filename, int lin
     cell_num = ((size - 1) / CELL_SIZE) + 1;
 
     if (storage->page_list != NULL
-        && (storage->page_list->use_cell_num + cell_num
-            < storage->page_list->cell_num)) {
+        && (storage->page_list->use_cell_num + cell_num < storage->page_list->cell_num)) {
+
         p = &(storage->page_list->cell[storage->page_list->use_cell_num]);
         storage->page_list->use_cell_num += cell_num;
     } else {

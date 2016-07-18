@@ -13,6 +13,10 @@
 #include "ORG.h"
 #include "ORG_dev.h"
 
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #define smaller(a, b)  ((a) < (b) ? (a) : (b))
 #define larger(a, b)   ((a) > (b) ? (a) : (b))
 
