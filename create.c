@@ -65,7 +65,7 @@ ArgumentList *org_chain_argument_list(ArgumentList *list, Expression *expr) {
 //创建语句 数组
 StatementList *org_create_statement_list(Statement *statement) {
     StatementList *sl;
-    sl = org_alloc_expression(sizeof(StatementList));
+    sl = org_malloc(sizeof(StatementList));
     sl->statement = statement;
     sl->next = NULL;
     return sl;
