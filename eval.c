@@ -155,7 +155,7 @@ static void eval_binary_int(ORG_Interpreter *inter, ExpressionType op,
     if (dkc_is_math_operator(op)) {
         result->type = ORG_INT_VALUE;
     } else if (dkc_is_compare_operator(op)) {
-        result = ORG_BOOLEAN_VALUE;
+        result->type = ORG_BOOLEAN_VALUE;
     } else {
         //debug
     }
