@@ -76,16 +76,20 @@ typedef enum {
 /* 一些宏定义 */
 
 //判断是否是运算符 采用宏可减少函数调用,节约时间
-#define dkc_is_math_operator(operator) \
-        ((operator) == ADD_EXPRESSION || (operator) == SUB_EXPRESSION \
-        || (operator) == MUL_EXPRESSION || (operator) == DIV_EXPRESSION \
-        || (operator) == MOD_EXPRESSION)
+#define dkc_is_math_operator(op) \
+        ((op) == ADD_EXPRESSION || (op) == SUB_EXPRESSION \
+        || (op) == MUL_EXPRESSION || (op) == DIV_EXPRESSION \
+        || (op) == MOD_EXPRESSION)
 
 //判断是否是判断符
-#define dkc_is_compare_operator(operator) \
-        ((operator) == EQ_EXPRESSION || (operator) == NE_EXPRESSION \
-        || (operator) == GT_EXPRESSION || (operator) == GE_EXPRESSION \
-        || (operator) == LT_EXPRESSION || (operator) == LE_EXPRESSION)
+#define dkc_is_compare_operator(op) \
+        ((op) == EQ_EXPRESSION || (op) == NE_EXPRESSION \
+        || (op) == GT_EXPRESSION || (op) == GE_EXPRESSION \
+        || (op) == LT_EXPRESSION || (op) == LE_EXPRESSION)
+
+//判断是否是逻辑操作符
+#define dkc_is_logical_operator(op) \
+  ((op) == LOGICAL_AND_EXPRESSION || (op) == LOGICAL_OR_EXPRESSION)
 
 //参数列表
 typedef struct ArgumentList_tag {
