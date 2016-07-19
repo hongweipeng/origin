@@ -1,0 +1,7 @@
+
+
+function fun(str) {
+    print(str);
+}
+
+fun("fff");

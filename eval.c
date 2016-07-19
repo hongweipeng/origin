@@ -567,7 +567,7 @@ static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *
         exit(1);
     }
     //执行函数内部的语句
-    result = org_execute_statement_list(inter, env, func->u.origin_f.block->statement_list);
+    result = org_execute_statement_list(inter, local_env, func->u.origin_f.block->statement_list);
 
     if (result.type == RETURN_STATEMENT_RESULT) {
         value = result.u.return_value;
