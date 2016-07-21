@@ -86,11 +86,9 @@ StatementList *org_chain_statement_list(StatementList *list, Statement *statemen
 }
 
 Expression *org_create_bignum(const char *text) {
-    int ret;
     Expression *exp = org_alloc_expression(BIG_DATA_EXPRESSION);
     mpi_init(&exp->u.big_num);
-    MPI_CHK( mpi_read_string( &exp->u.big_num, 10, text) );
-    cleanup:
+    mpi_read_string( &exp->u.big_num, 10, text);
     return exp;
 }
 
@@ -335,3 +333,18 @@ Statement *org_create_continue_statement(void) {
     return st;
 }
 
+// 把ORG_Value 转化为大数类型
+mpi org_create_origin_bignum(ORG_Value v) {
+    if (v.type == ORG_BIGNUM_VALUE) {
+        return v.u.big_num;
+    }
+
+    char buf[LINE_BUF_SIZE];
+    mpi ret;
+    mpi_init(&ret);
+    if(v.type == ORG_INT_VALUE) {
+        sprintf(buf, "%d", v.u.int_value);
+        mpi_read_string( &ret, 10, buf);
+    }
+    return ret;
+}

@@ -342,12 +342,15 @@ Statement *org_create_return_statement(Expression *expression);
 Statement *org_create_break_statement(void);
 Statement *org_create_continue_statement(void);
 
+mpi org_create_origin_bignum(ORG_Value v);
+
 /* string.c */
 char *org_create_identifier(char *str);
 void org_open_string_literal(void);
 void org_add_string_literal(int letter);
 void org_reset_string_literal_buffer(void);
 char *org_close_string_literal(void);
+char *org_value_to_string(ORG_Value value);
 
 /* execute.c */
 StatementResult org_execute_statement_list(ORG_Interpreter *inter, LocalEnvironment *env, StatementList *list);

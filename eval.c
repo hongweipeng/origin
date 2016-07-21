@@ -403,11 +403,16 @@ ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *e
             right_str = (right_val.u.boolean_value) ? org_create_origin_string(inter, MEM_strdup("true")) : org_create_origin_string(inter, MEM_strdup("false"));
         } else if (right_val.type == ORG_STRING_VALUE) {
             right_str = right_val.u.string_value;
+        } else if (right_val.type == ORG_BIGNUM_VALUE) {
+            right_str = org_create_origin_string(inter, MEM_strdup(org_value_to_string(right_val)));
         }
 
         result.type = ORG_STRING_VALUE;
         result.u.string_value = chain_string(inter, left_val.u.string_value, right_str);
-    } else if (left_val.type == ORG_BOOLEAN_VALUE && right_val.type == ORG_BOOLEAN_VALUE) {
+    } else if (left_val.type == ORG_BIGNUM_VALUE || right_val.type == ORG_BIGNUM_VALUE) {
+        //大数运算
+        org_eval_binary_bignum_expression(inter, env, op, left_val, right_val, &result, left->line_number);
+    }else if (left_val.type == ORG_BOOLEAN_VALUE && right_val.type == ORG_BOOLEAN_VALUE) {
         //
 
         result.type = ORG_BOOLEAN_VALUE;
@@ -427,6 +432,31 @@ ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *e
 
     return result;
 
+}
+
+void org_eval_binary_bignum_expression(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op,
+                                              ORG_Value left, ORG_Value right, ORG_Value *result, int line_number) {
+
+    mpi left_val = org_create_origin_bignum(left);
+    mpi right_val = org_create_origin_bignum(right);
+    mpi_init(&result->u.big_num);
+
+    if (op == ADD_EXPRESSION) {
+        mpi_add_mpi(&result->u.big_num, &left_val, &right_val);
+    } else if (op == SUB_EXPRESSION) {
+        mpi_sub_mpi(&result->u.big_num, &left_val, &right_val);
+    } else if (op == MUL_EXPRESSION) {
+        mpi_mul_mpi(&result->u.big_num, &left_val, &right_val);
+    } else if (op == DIV_EXPRESSION) {
+        mpi temp;
+        mpi_init(&temp);// 存放余数
+        mpi_div_mpi(&result->u.big_num, &temp, &left_val, &right_val);
+    }else {
+        //不支持这种大数运算
+        printf("不支持这种大数运算");
+        exit(1);
+    }
+    result->type = ORG_BIGNUM_VALUE;
 }
 
 // 布尔运算 支持短路求值

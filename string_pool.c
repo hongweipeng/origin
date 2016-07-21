@@ -11,6 +11,7 @@
 #include "MEM.h"
 #include "DBG.h"
 #include "origin.h"
+#include "ORG_dev.h"
 
 static ORG_String *alloc_org_string(ORG_Interpreter *inter, char *str, ORG_Boolean is_literal) {
     ORG_String *ret;
@@ -54,4 +55,5 @@ ORG_String *org_create_origin_string(ORG_Interpreter *inter, char *str) {
     ret->ref_count = 1;
     return ret;
 }
+
 

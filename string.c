@@ -9,6 +9,7 @@
 #include <string.h>
 #include "MEM.h"
 #include "origin.h"
+#include "ORG_dev.h"
 
 #define STRING_ALLOC_SIZE  (256)
 
@@ -52,6 +53,22 @@ char *org_create_identifier(char *str) {
     new_str = org_malloc(strlen(str) + 1);
     strcpy(new_str, str);
     return new_str;
+}
+
+char *org_value_to_string(ORG_Value value){
+    char *str;
+    size_t size;
+    char buf[LINE_BUF_SIZE];
+    if (value.type == ORG_INT_VALUE) {
+        sprintf(buf, "%d", value.u.int_value);
+    }else if(value.type == ORG_BIGNUM_VALUE) {
+        size = mpi_msb(&value.u.big_num);
+        str = malloc(size);
+        mpi_write_string( &value.u.big_num, 10, str, &size );
+        return str;
+    }
+
+    return buf;
 }
 
 
