@@ -9,6 +9,7 @@
 #include <string.h>
 #include "ORG.h"
 #include "origin.h"
+#include "ORG_dev.h"
 
 //布尔表达式
 static ORG_Value eval_boolean_expression(ORG_Boolean boolean_value) {
@@ -43,6 +44,14 @@ static ORG_Value eval_null_expression(void) {
     ORG_Value v;
     v.type = ORG_NULL_VALUE;
     return v;
+}
+
+//大数表达式
+static ORG_Value eval_bignum_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
+    ORG_Value value;
+    value.type = ORG_BIGNUM_VALUE;
+    value.u.big_num = expr->u.big_num;
+    return value;
 }
 
 static void refer_if_string(ORG_Value *v) {
@@ -607,6 +616,8 @@ static ORG_Value eval_function_call_expression(ORG_Interpreter *inter, LocalEnvi
     return value;
 }
 
+
+
 // 运行表达式 或者表达式结果
 static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
     ORG_Value v;
@@ -654,6 +665,10 @@ static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, 
             break;
         case NULL_EXPRESSION:
             v = eval_null_expression();
+            break;
+        case BIG_DATA_EXPRESSION:
+            // 这里需要加eval_bignum_expression()
+            v = eval_bignum_expression(inter, env, expr);
             break;
         case EXPRESSION_TYPE_COUNT_PLUS_1:  /* FALLTHRU */
         default:

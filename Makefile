@@ -3,7 +3,7 @@ CC = gcc
 YY = yacc
 CFLAGS = -c -g -Wall -Wswitch-enum -pedantic -DDEBUG
 OBJS = lex.yy.o y.tab.o main.o interface.o create.o execute.o\
-	   eval.o string.o string_pool.o util.o native.o mem.o
+	   eval.o string.o string_pool.o util.o native.o mem.o bignum.o
 INCLUDES = \
 
 $(TARGET):$(OBJS)
@@ -23,6 +23,10 @@ y.tab.o:y.tab.c origin.h MEM.h
 
 lex.yy.o:lex.yy.c origin.h MEM.h y.tab.h
 	$(CC) -c -g $*.c $(INCLUDES)
+
+bignum.o:native_obj/bignum/bignum.c native_obj/bignum/bignum.h
+	$(CC) -c -g native_obj/bignum/bignum.c
+
 .c.o:
 	$(CC) $(CFLAGS) $*.c $(INCLUDES)
 	echo "in .c.o rule"

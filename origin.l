@@ -64,6 +64,18 @@
     yylval.identifier = org_create_identifier(yytext);
     return IDENTIFIER;
 }
+
+<INITIAL>([1-9][0-9]*big)|0big {
+    //大数类型
+    int len = strlen(yytext);
+    char *text = malloc(len - 2);
+    memcpy(text, yytext, len-3);
+    text[len-1] = '\0';
+    Expression *expression = org_create_bignum(text);
+    yylval.expression = expression;
+    return INT_LITERAL;
+}
+
 <INITIAL>([1-9][0-9]*)|0 {
     //整数类型
     Expression *expression = org_alloc_expression(INT_EXPRESSION);

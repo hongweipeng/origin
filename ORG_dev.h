@@ -9,6 +9,7 @@
 #define _ORG_DEV_H
 
 #include "ORG.h"
+#include "bignum.h"
 
 //定义布尔类型 c语言没有布尔类型，需要自己定义
 typedef enum {
@@ -32,6 +33,7 @@ typedef enum {
     ORG_STRING_VALUE,       //字符串型
     ORG_NATIVE_POINTER_VALUE, //复杂数据类型 任意类型，包括基本数据类型
     ORG_NULL_VALUE,         //空值，未设置类型
+    ORG_BIGNUM_VALUE,       //大数
 } ORG_ValueType;
 
 //任意类型定义
@@ -49,6 +51,7 @@ typedef struct {
         double  double_value;
         ORG_String *string_value;
         ORG_NativePointer native_pointer;
+        mpi     big_num;
     } u;
 } ORG_Value;
 

@@ -12,6 +12,7 @@
 #include "MEM.h"
 #include "ORG.h"
 #include "ORG_dev.h"
+#include "native_obj/bignum/bignum.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -69,6 +70,7 @@ typedef enum {
     MINUS_EXPRESSION,       // 单目取反
     FUNCTION_CALL_EXPRESSION, //函数调用表达式
     NULL_EXPRESSION,        //null表达式
+    BIG_DATA_EXPRESSION,    //大数
     EXPRESSION_TYPE_COUNT_PLUS_1,
 
 } ExpressionType;
@@ -128,6 +130,7 @@ struct Expression_tag {
         AssignExpression assign_expression;
         BinaryExpression binary_expression;
         Expression      *minus_expression;
+        mpi             big_num;   //大数
         FunctionCallExpression function_call_expression;
     } u;
 };

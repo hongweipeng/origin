@@ -6,6 +6,7 @@
  ************************************************************************/
 
 #include "origin.h"
+#include "bignum.h"
 
 //创建函数
 void org_function_define(char *identifier, ParameterList *parameter_list, Block *block) {
@@ -82,6 +83,15 @@ StatementList *org_chain_statement_list(StatementList *list, Statement *statemen
 
     pos->next = org_create_statement_list(statement);
     return list;
+}
+
+Expression *org_create_bignum(const char *text) {
+    int ret;
+    Expression *exp = org_alloc_expression(BIG_DATA_EXPRESSION);
+    mpi_init(&exp->u.big_num);
+    MPI_CHK( mpi_read_string( &exp->u.big_num, 10, text) );
+    cleanup:
+    return exp;
 }
 
 //申请存放表达式的地址空间
