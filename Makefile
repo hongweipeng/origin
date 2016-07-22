@@ -54,5 +54,5 @@ util.o: util.c MEM.h DBG.h origin.h ORG.h ORG_dev.h
 
 
 clean:
-	rm -f *.o lex.yy.c y.tab.c y.tab.h *~
+	rm -f *.o lex.yy.c y.tab.c y.tab.h $(TARGET) *~
 
