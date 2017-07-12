@@ -2,13 +2,13 @@ function calc(n, i, cols, diags, trans) {
     if ( i == n) {
         return 1;
     }
-    return 2;
+    #return 2;
     rt = 0;
     for (j = 0; j < n; j = j + 1) {
         col = (1 << j);
         diag = (1 << (i - j + n - 1));
         tran = (1 << (i + j));
-        if (!(col & cols) && !(diag & diags) && !(tran & trans)) {
+        if (0 == (col & cols) && 0 == (diag & diags) && (tran & trans) == 0) {
             rt = rt + calc(n, i + 1, col | cols, diag | diags, tran | trans);
         }
     }

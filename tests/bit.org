@@ -4,4 +4,4 @@ function fun(a) {
     return a;
 }
 
-print(96 & fun(3));
+print(96 << fun(3 + 2));
