@@ -1,0 +1,20 @@
+function calc(n, i, cols, diags, trans) {
+    if ( i == n) {
+        return 1;
+    }
+    return 2;
+    rt = 0;
+    for (j = 0; j < n; j = j + 1) {
+        col = (1 << j);
+        diag = (1 << (i - j + n - 1));
+        tran = (1 << (i + j));
+        if (!(col & cols) && !(diag & diags) && !(tran & trans)) {
+            rt = rt + calc(n, i + 1, col | cols, diag | diags, tran | trans);
+        }
+    }
+    return rt;
+
+}
+
+
+print(calc(8, 0, 0, 0, 0));
