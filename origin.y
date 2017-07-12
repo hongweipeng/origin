@@ -34,13 +34,14 @@ int yyerror(char const *str) {
 %token FUNCTION IF ELSE ELSEIF WHILE FOR RETURN_O BREAK CONTINUE NULL_O
         LP RP LC RC SEMICOLON COMMA ASSIGN LOGICAL_AND LOGICAL_OR
         EQ NE GT GE LT LE ADD SUB MUL DIV MOD TRUE_O FALSE_O GLOBAL_O
+        BIT_LEFT BIT_RIGHT BIT_OR BIT_AND BIT_XOR
 %type   <parameter_list> parameter_list
 %type   <argument_list> argument_list
 %type   <expression> expression expression_opt
         logical_and_expression logical_or_expression
         equality_expression relational_expression
         additive_expression multiplicative_expression
-        unary_expression primary_expression
+        unary_expression primary_expression bit_expression
 %type   <statement> statement global_statement
         if_statement while_statement for_statement
         return_statement break_statement continue_statement
@@ -135,7 +136,7 @@ equality_expression
         }
         ;
 relational_expression
-        : additive_expression
+        : bit_expression
         | relational_expression GT additive_expression
         {
             $$ = org_create_binary_expression(GT_EXPRESSION, $1, $3);
@@ -153,6 +154,31 @@ relational_expression
             $$ = org_create_binary_expression(LE_EXPRESSION, $1, $3);
         }
         ;
+
+bit_expression
+        : additive_expression
+        | additive_expression BIT_LEFT additive_expression
+        {
+            $$ = org_create_binary_expression(BIT_LEFT_EXPRESSION, $1, $3);
+        }
+        | additive_expression BIT_RIGHT additive_expression
+        {
+            $$ = org_create_binary_expression(BIT_RIGHT_EXPRESSION, $1, $3);
+        }
+        | additive_expression BIT_OR additive_expression
+        {
+            $$ = org_create_binary_expression(BIT_OR_EXPRESSION, $1, $3);
+        }
+        | additive_expression BIT_AND additive_expression
+        {
+            $$ = org_create_binary_expression(BIT_AND_EXPRESSION, $1, $3);
+        }
+        | additive_expression BIT_XOR additive_expression
+        {
+            $$ = org_create_binary_expression(BIT_XOR_EXPRESSION, $1, $3);
+        }
+        ;
+
 additive_expression
         : multiplicative_expression
         | additive_expression ADD multiplicative_expression

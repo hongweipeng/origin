@@ -1,0 +1,7 @@
+
+function fun(a) {
+    a = a + 3;
+    return a;
+}
+
+print(96 & fun(3));

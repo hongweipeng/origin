@@ -71,6 +71,13 @@ typedef enum {
     FUNCTION_CALL_EXPRESSION, //函数调用表达式
     NULL_EXPRESSION,        //null表达式
     BIG_DATA_EXPRESSION,    //大数
+
+    BIT_LEFT_EXPRESSION,    //位运算 左移
+    BIT_RIGHT_EXPRESSION,
+    BIT_OR_EXPRESSION,
+    BIT_AND_EXPRESSION,
+    BIT_XOR_EXPRESSION,
+
     EXPRESSION_TYPE_COUNT_PLUS_1,
 
 } ExpressionType;
@@ -81,7 +88,9 @@ typedef enum {
 #define dkc_is_math_operator(op) \
         ((op) == ADD_EXPRESSION || (op) == SUB_EXPRESSION \
         || (op) == MUL_EXPRESSION || (op) == DIV_EXPRESSION \
-        || (op) == MOD_EXPRESSION)
+        || (op) == MOD_EXPRESSION) || (op) == BIT_LEFT_EXPRESSION\
+        || (op) == BIT_RIGHT_EXPRESSION || (op) == BIT_OR_EXPRESSION\
+        || (op) == BIT_AND_EXPRESSION || (op) == BIT_XOR_EXPRESSION
 
 //判断是否是判断符
 #define dkc_is_compare_operator(op) \

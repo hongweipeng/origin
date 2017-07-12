@@ -58,6 +58,11 @@
 <INITIAL>"*"            return MUL;
 <INITIAL>"/"            return DIV;
 <INITIAL>"%"            return MOD;
+<INITIAL>"<<"           return BIT_LEFT;
+<INITIAL>">>"           return BIT_RIGHT;
+<INITIAL>"|"            return BIT_OR;
+<INITIAL>"&"            return BIT_AND;
+<INITIAL>"^"            return BIT_XOR;
 
 <INITIAL>[A-Za-z_][A-Za-z_0-9]* {
     //标识符(变量名，函数名)

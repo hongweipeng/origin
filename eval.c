@@ -214,6 +214,21 @@ static void eval_binary_int(ORG_Interpreter *inter, ExpressionType op,
         case LE_EXPRESSION:
             result->u.boolean_value = left <= right;
             break;
+        case BIT_LEFT_EXPRESSION:
+            result->u.int_value = left << right;
+            break;
+        case BIT_RIGHT_EXPRESSION:
+            result->u.int_value = left >> right;
+            break;
+        case BIT_OR_EXPRESSION:
+            result->u.int_value = left | right;
+            break;
+        case BIT_AND_EXPRESSION:
+            result->u.int_value = left & right;
+            break;
+        case BIT_XOR_EXPRESSION:
+            result->u.int_value = left ^ right;
+            break;
         case MINUS_EXPRESSION:              /* FALLTHRU */
         case FUNCTION_CALL_EXPRESSION:      /* FALLTHRU */
         case NULL_EXPRESSION:               /* FALLTHRU */
@@ -365,7 +380,7 @@ ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *e
 
     left_val = eval_expression(inter, env, left);
     right_val = eval_expression(inter, env, right);
-
+    //printf("%s\n", right_val.type);
 
     /**
      * 对于加法运算
@@ -427,6 +442,7 @@ ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *e
     } else {
         char *op_str = org_get_operator_string(op);
         //runtime error
+
         exit(1);
     }
 
@@ -651,6 +667,7 @@ static ORG_Value eval_function_call_expression(ORG_Interpreter *inter, LocalEnvi
 // 运行表达式 或者表达式结果
 static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
     ORG_Value v;
+
     switch (expr->type) {
         case BOOLEAN_EXPRESSION:
             v = eval_boolean_expression(expr->u.boolean_value);
@@ -681,6 +698,11 @@ static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, 
         case GE_EXPRESSION: /* fail */
         case LT_EXPRESSION: /* fail */
         case LE_EXPRESSION:
+        case BIT_LEFT_EXPRESSION:
+        case BIT_RIGHT_EXPRESSION:
+        case BIT_OR_EXPRESSION:
+        case BIT_AND_EXPRESSION:
+        case BIT_XOR_EXPRESSION:
             v = org_eval_binary_expression(inter, env, expr->type, expr->u.binary_expression.left, expr->u.binary_expression.right);
             break;
         case LOGICAL_AND_EXPRESSION:/* FALLTHRU */
@@ -703,7 +725,7 @@ static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, 
         case EXPRESSION_TYPE_COUNT_PLUS_1:  /* FALLTHRU */
         default:
             //DBG_panic(("bad case. type..%d\n", expr->type));
-            //printf("");
+            printf("bad case. type..%d\n", expr->type);
             break;
     }
     return v;
