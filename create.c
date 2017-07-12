@@ -57,7 +57,7 @@ ArgumentList *org_create_argument_list(Expression *expression) {
 
 ArgumentList *org_chain_argument_list(ArgumentList *list, Expression *expr) {
     ArgumentList *pos;
-    for (pos = list; pos != NULL; pos = pos->next);
+    for (pos = list; pos->next != NULL; pos = pos->next);
 
     pos->next = org_create_argument_list(expr);
     return list;
