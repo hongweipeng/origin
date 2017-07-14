@@ -70,11 +70,11 @@
     return IDENTIFIER;
 }
 
-<INITIAL>([1-9][0-9]*big)|0big {
+<INITIAL>([1-9][0-9]*L)|0L {
     //大数类型
     int len = strlen(yytext);
-    char *text = malloc(len - 2);
-    memcpy(text, yytext, len-3);
+    char *text = malloc(len);
+    memcpy(text, yytext, len-1);
     text[len-1] = '\0';
     Expression *expression = org_create_bignum(text);
     yylval.expression = expression;
