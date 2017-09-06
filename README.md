@@ -8,7 +8,12 @@
  - bison
  - flex
  - gcc
+
 gcc一般是linux系统自带的，没有bsion和flex可以通过`apt-get install bison`和`apt-get install flex`进行安装
+
+## 学习
+`cale` 文件夹下是一个计算器案例, 包含使用flex版本和手工版本
+`simple_for` 文件夹是一个简易的仅支持for和if和简单的四则运算的解释器, 刚开始学习可试着来完善它.
 
 ## 编译
 ```
