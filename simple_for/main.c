@@ -24,7 +24,9 @@ void ORG_compile(ORG_Interpreter *inter, FILE *fp) {
 
     yyin = fp;
     if (yyparse()) {
-        fprintf(stderr, "ORG_compile Error\n");
+        if (inter->statement_list) {
+            fprintf(stderr, "ORG_compile Error\n");
+        }
     }
     //org_reset_string_literal_buffer();
 }
