@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     ORG_dispose_interpreter(interpreter);
 
     MEM_dump_blocks(stdout);
-
+    fclose(fp);
     return 0;
 }
 

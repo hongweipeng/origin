@@ -1,6 +1,6 @@
 yacc -dv calc.y
 flex calc.l
-cc -o calc y.tab.c lex.yy.c
+gcc -o calc y.tab.c lex.yy.c
 
 
 目录me里面为自制的词法分析器和语法分析器

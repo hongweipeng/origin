@@ -54,5 +54,6 @@ int main(int argc, char **argv) {
     interpreter = ORG_create_interpreter();
     ORG_compile(interpreter, fp);
     ORG_interpret_run(interpreter);
+    fclose(fp);
     return 0;
 }
