@@ -22,7 +22,6 @@ int yyerror(char const *str) {
     Statement           *statement;
     StatementList       *statement_list;
     Block               *block;
-    IdentifierList      *identifier_list;
 }
 %token <expression>     INT_LITERAL
 %token <identifier>     IDENTIFIER
@@ -34,12 +33,11 @@ int yyerror(char const *str) {
         additive_expression multiplicative_expression
         logical_expression primary_expression expression_opt
 
-%type   <statement> statement global_statement for_statement if_statement
+%type   <statement> statement for_statement if_statement
         break_statement
 %type   <statement_list> statement_list
 
 %type   <block> block
-%type   <identifier_list> identifier_list
 %%
 
 translation_unit
@@ -134,23 +132,11 @@ statement
         {
             $$ = org_create_print_statement($3);
         }
-        | global_statement
         | if_statement
         | for_statement
         | break_statement
         ;
-global_statement
-        : identifier_list SEMICOLON
-        {
-            $$ = org_create_global_statement($1);
-        }
-        ;
-identifier_list
-        : IDENTIFIER
-        {
-            $$ = org_create_global_identifier($1);
-        }
-        ;
+
 if_statement
         : IF LP expression RP block
         {

@@ -5,6 +5,7 @@
 #ifndef ORIGIN_ORIGIN_H
 #define ORIGIN_ORIGIN_H
 
+#include <string.h>
 // ================ 基础类型定义 ===============
 
 //定义布尔类型 c语言没有布尔类型，需要自己定义
