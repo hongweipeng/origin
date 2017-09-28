@@ -29,7 +29,7 @@ int yyerror(char const *str) {
 %token  IF BREAK FOR
         LP RP LC RC SEMICOLON ASSIGN
         EQ NE GT GE LT LE ADD SUB MUL DIV MOD
-        PRINT
+        PRINT ELSE
 %type   <expression> expression
         additive_expression multiplicative_expression
         logical_expression primary_expression expression_opt
@@ -155,6 +155,10 @@ if_statement
         : IF LP expression RP block
         {
             $$ = org_create_if_statement($3, $5, NULL);
+        }
+        | IF LP expression RP block ELSE block
+        {
+            $$ = org_create_if_statement($3, $5, $7);
         }
         ;
 for_statement

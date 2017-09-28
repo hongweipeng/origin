@@ -19,6 +19,8 @@
 
 %%
 <INITIAL>"if"           return IF;
+<INITIAL>"else"         return ELSE;
+
 
 <INITIAL>"for"          return FOR;
 <INITIAL>"break"        return BREAK;
