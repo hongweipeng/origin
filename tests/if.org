@@ -2,7 +2,7 @@
 for (i = 9; i < 100; i = i + 1) {
     print(i);
     if (i == 15){
-        print("mabi\n");
+        print("if is true, break\n");
         break;
     }
     print("" + i + "\n");
