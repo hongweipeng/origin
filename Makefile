@@ -9,14 +9,14 @@ INCLUDES = \
 $(TARGET):$(OBJS)
 	$(CC) $(OBJS) -o $@ -lm
 
-y.tab.h:origin.y
-	$(YY) -dv origin.y
+y.tab.h:Parser/origin.y
+	$(YY) -dv Parser/origin.y
 
-y.tab.c:origin.y
-	$(YY) -dv origin.y
+y.tab.c:Parser/origin.y
+	$(YY) -dv Parser/origin.y
 
-lex.yy.c:origin.l origin.y y.tab.h
-	lex origin.l
+lex.yy.c:Parser/origin.l Parser/origin.y y.tab.h
+	lex Parser/origin.l
 
 y.tab.o:y.tab.c origin.h MEM.h
 	$(CC) -c $*.c $(INCLUDES)
