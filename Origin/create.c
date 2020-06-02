@@ -129,7 +129,7 @@ static Expression convert_value_to_expression(ORG_Value *v) {
 //创建二元表达式
 Expression *org_create_binary_expression(ExpressionType op, Expression *left, Expression *right) {
     if ((left->type == INT_EXPRESSION || left->type == DOUBLE_EXPRESSION)
-            && (right->type == INT_EXPRESSION || right == DOUBLE_EXPRESSION)) {
+            && (right->type == INT_EXPRESSION || right->type == DOUBLE_EXPRESSION)) {
 
         ORG_Value *value;
         /* Overwriting left hand expression. */
