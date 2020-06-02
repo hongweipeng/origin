@@ -8,6 +8,6 @@
 #ifndef _BIGNUM_H
 #define _BIGNUM_H
 
-#include "native_obj/bignum/bignum.h"
+#include "../native_obj/bignum/bignum.h"
 
 #endif

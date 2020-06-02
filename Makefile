@@ -3,7 +3,7 @@ CC = gcc
 YY = yacc
 CFLAGS = -c -g -Wall -Wswitch-enum -pedantic -DDEBUG
 OBJS = lex.yy.o y.tab.o main.o Origin/interface.o Origin/create.o Origin/execute.o\
-	   Origin/eval.o string.o string_pool.o Origin/util.o Origin/native.o Origin/mem.o Origin/bignum.o
+	   Origin/eval.o string.o string_pool.o Origin/util.o Origin/native.o mem.o bignum.o
 INCLUDES = -I. -I./Include
 COREDIR = Origin
 
@@ -29,12 +29,12 @@ bignum.o:native_obj/bignum/bignum.c native_obj/bignum/bignum.h
 	$(CC) -c -g native_obj/bignum/bignum.c
 
 .c.o:
-	$(CC) $(CFLAGS) $*.c $(INCLUDES)
+	$(CC) $(CFLAGS) $*.c $(INCLUDES) -o $@
 	echo "in .c.o rule"
 
 # mem.o
 mem.o:Origin/memory.o Origin/storage.o
-	ld -r -o Origin/mem.o Origin/memory.o Origin/storage.o
+	ld -r -o $@ Origin/memory.o Origin/storage.o
 
 memory.o:Origin/memory.c Include/memory.h Include/MEM.h
 storage.o:Origin/storage.c Include/memory.h Include/MEM.h
@@ -55,5 +55,5 @@ util.o: Origin/util.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h
 
 
 clean:
-	rm -f *.o lex.yy.c y.tab.c y.tab.h $(TARGET) *~
+	rm -f *.o Origin/*.o lex.yy.c y.tab.c y.tab.h $(TARGET) *~
 
