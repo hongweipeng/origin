@@ -41,7 +41,7 @@ void org_reset_string_literal_buffer(void) {
 char *org_close_string_literal(void) {
     char *new_str;
     new_str = org_malloc(st_string_literal_buff_size + 1);
-    //memcpy strcpy 用memcpy避免字符串中\0不被复制
+    /*memcpy strcpy 用memcpy避免字符串中\0不被复制*/
     memcpy(new_str, st_string_literal_buffer, st_string_literal_buff_size);
     new_str[st_string_literal_buff_size] = '\0';
     return new_str;

@@ -23,7 +23,7 @@ static ORG_String *alloc_org_string(ORG_Interpreter *inter, char *str, ORG_Boole
     return  ret;
 }
 
-// 将字面字符串转为ORG_String
+/* 将字面字符串转为ORG_String*/
 ORG_String *org_literal_to_org_string(ORG_Interpreter *inter, char *str) {
     ORG_String *ret;
     ret = alloc_org_string(inter, str, ORG_TRUE);
@@ -31,15 +31,15 @@ ORG_String *org_literal_to_org_string(ORG_Interpreter *inter, char *str) {
     return ret;
 }
 
-// 引用计数自增
+/* 引用计数自增*/
 void org_refer_string(ORG_String *str) {
     str->ref_count++;
 }
 
-// 引用计数自减 为0时则释放
+/* 引用计数自减 为0时则释放*/
 void org_release_string(ORG_String *str) {
     str->ref_count --;
-    //DBG
+    /*DBG*/
 
     if (str->ref_count == 0) {
         if (!str->is_literal) {
