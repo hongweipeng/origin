@@ -295,7 +295,7 @@ void MEM_dump_blocks_func(MEM_Controller controller, FILE *fp) {
                 pos->s.filename, pos->s.line, pos->s.size);
         counter++;
     }
-/*#endif /* DEBUG */
+/*#endif */
 }
 
 void MEM_check_block_func(MEM_Controller controller, char *filename, int line, void *p) {

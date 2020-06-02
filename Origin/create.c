@@ -72,7 +72,7 @@ StatementList *org_create_statement_list(Statement *statement) {
 }
 
 StatementList *org_chain_statement_list(StatementList *list, Statement *statement) {
-    StatementList *pos;
+    StatementList *pos = NULL;
 
     if (list == NULL) {
         return org_create_statement_list(statement);
