@@ -61,7 +61,7 @@ string.o: string.c Include/MEM.h Include/origin.h Include/ORG.h Include/ORG_dev.
 string_pool.o: string_pool.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 util.o: $(COREDIR)/util.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 
-
+rebuild: clean $(TARGET)
 
 clean:
 	rm -f *.o $(COREDIR)/*.o lex.yy.c y.tab.c origin.tab.h $(TARGET) $(TARGET).tab.c $(TARGET).tab.h *~
