@@ -45,27 +45,27 @@ bignum.o:native_obj/bignum/bignum.c native_obj/bignum/bignum.h
 	echo "in .c.o rule"
 
 # mem.o
-mem.o:Origin/memory.o Origin/storage.o
-	ld -r -o $@ Origin/memory.o Origin/storage.o
+mem.o:$(COREDIR)/memory.o $(COREDIR)/storage.o
+	ld -r -o $@ $(COREDIR)/memory.o $(COREDIR)/storage.o
 
-memory.o:Origin/memory.c Include/memory.h Include/MEM.h
-storage.o:Origin/storage.c Include/memory.h Include/MEM.h
+memory.o:$(COREDIR)/memory.c Include/memory.h Include/MEM.h
+storage.o:$(COREDIR)/storage.c Include/memory.h Include/MEM.h
 
 #################################
-create.o: Origin/create.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
+create.o: $(COREDIR)/create.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 error.o: error.c Include/MEM.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 error_message.o: error_message.c Include/origin.h Include/MEM.h Include/ORG.h Include/ORG_dev.h
-eval.o: Origin/eval.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
-execute.o: Origin/execute.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
-interface.o: Origin/interface.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
+eval.o: $(COREDIR)/eval.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
+execute.o: $(COREDIR)/execute.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
+interface.o: $(COREDIR)/interface.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 main.o: main.c Include/ORG.h Include/MEM.h
-native.o: Origin/native.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
+native.o: $(COREDIR)/native.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 string.o: string.c Include/MEM.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 string_pool.o: string_pool.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
-util.o: Origin/util.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
+util.o: $(COREDIR)/util.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 
 
 
 clean:
-	rm -f *.o Origin/*.o lex.yy.c y.tab.c y.tab.h $(TARGET) *~
+	rm -f *.o $(COREDIR)/*.o lex.yy.c y.tab.c y.tab.h $(TARGET) *~
 
