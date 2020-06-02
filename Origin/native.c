@@ -11,7 +11,6 @@
 #include "DBG.h"
 #include "ORG_dev.h"
 #include "origin.h"
-#include "bignum.h"
 
 #define NATIVE_LIB_NAME "crowbar.lang.file"
 
@@ -58,13 +57,6 @@ ORG_Value org_nv_print_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Val
             break;
         case ORG_NULL_VALUE:
             printf("null");
-            break;
-        case ORG_BIGNUM_VALUE:
-            //输出大数
-            size = mpi_msb(&args[0].u.big_num);
-            ready_print = malloc(size);
-            mpi_write_string( &args[0].u.big_num, 10, ready_print, &size );
-            printf("%s", ready_print);
             break;
     }
 

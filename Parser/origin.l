@@ -70,17 +70,6 @@
     return IDENTIFIER;
 }
 
-<INITIAL>([1-9][0-9]*L)|0L {
-    //大数类型
-    int len = strlen(yytext);
-    char *text = malloc(len);
-    memcpy(text, yytext, len-1);
-    text[len-1] = '\0';
-    Expression *expression = org_create_bignum(text);
-    yylval.expression = expression;
-    return INT_LITERAL;
-}
-
 <INITIAL>([1-9][0-9]*)|0 {
     //整数类型
     Expression *expression = org_alloc_expression(INT_EXPRESSION);

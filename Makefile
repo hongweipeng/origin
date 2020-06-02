@@ -14,7 +14,7 @@ OBJS = 	\
 		string_pool.o \
 		Origin/util.o \
 		Origin/native.o \
-		mem.o bignum.o
+		mem.o
 
 INCLUDES = -I. -I./Include
 COREDIR = Origin
@@ -36,9 +36,6 @@ origin.tab.o:origin.tab.c Include/origin.h Include/MEM.h
 
 lex.yy.o:lex.yy.c Include/origin.h Include/MEM.h origin.tab.h
 	$(CC) -c -g $*.c $(INCLUDES)
-
-bignum.o:native_obj/bignum/bignum.c native_obj/bignum/bignum.h
-	$(CC) -c -g native_obj/bignum/bignum.c
 
 .c.o:
 	$(CC) $(CFLAGS) $*.c $(INCLUDES) -o $@

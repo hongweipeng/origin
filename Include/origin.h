@@ -12,7 +12,6 @@
 #include "MEM.h"
 #include "ORG.h"
 #include "ORG_dev.h"
-#include "native_obj/bignum/bignum.h"
 
 #ifndef DEBUG
 #define DEBUG
@@ -139,7 +138,6 @@ struct Expression_tag {
         AssignExpression assign_expression;
         BinaryExpression binary_expression;
         Expression      *minus_expression;
-        mpi             big_num;   //大数
         FunctionCallExpression function_call_expression;
     } u;
 };
@@ -351,7 +349,6 @@ Statement *org_create_return_statement(Expression *expression);
 Statement *org_create_break_statement(void);
 Statement *org_create_continue_statement(void);
 
-mpi org_create_origin_bignum(ORG_Value v);
 
 /* string.c */
 char *org_create_identifier(char *str);
