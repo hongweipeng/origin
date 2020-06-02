@@ -103,33 +103,33 @@ static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, 
  * 变量赋值时调用
  * identifier
  */
-static ORG_Value eval_assign_expression(ORG_Interpreter *inter, LocalEnvironment *env, char *identifier, Expression *expression) {
-    ORG_Value v;
+static ORG_Value* eval_assign_expression(ORG_Interpreter *inter, LocalEnvironment *env, char *identifier, Expression *expression) {
+    ORG_Value *v;
     Variable *left;
 
     //获得右侧表达式结果
-    v = eval_expression(inter, env, expression);
+    ORG_Value right = eval_expression(inter, env, expression);
+    v = &right;
 
     //查找局部变量
     left = org_search_local_variable(env, identifier);
-
     if (left == NULL) {//找不到在全局查找
         left = search_global_variable_form_env(inter, env, identifier);
     }
 
     if (left != NULL) {
         release_if_string(&left->value);
-        left->value = v;
-        refer_if_string(&v);
+        left->value = *v;
+        refer_if_string(v);
     } else { // 没有找到变量,注册新的变量
         if (env != NULL) {
             // 函数内的布局变量
-            org_add_local_variable(env, identifier, &v);
+            org_add_local_variable(env, identifier, v);
         } else {
             // 函数外的全局变量
-            ORG_add_global_variable(inter, identifier, &v);
+            ORG_add_global_variable(inter, identifier, v);
         }
-        refer_if_string(&v);
+        refer_if_string(v);
     }
     return v;
 }
@@ -629,6 +629,7 @@ static ORG_Value eval_function_call_expression(ORG_Interpreter *inter, LocalEnvi
 // 运行表达式 或者表达式结果
 static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
     ORG_Value v;
+    ORG_Value *tmp = NULL;
 
     switch (expr->type) {
         case BOOLEAN_EXPRESSION:
@@ -647,7 +648,8 @@ static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, 
             v = eval_identifier_expression(inter, env, expr);
             break;
         case ASSIGN_EXPRESSION:
-            v = eval_assign_expression(inter, env, expr->u.assign_expression.variable, expr->u.assign_expression.operand);
+            tmp = eval_assign_expression(inter, env, expr->u.assign_expression.variable, expr->u.assign_expression.operand);
+            v = *tmp;
             break;
         case ADD_EXPRESSION:        /* fail */
         case SUB_EXPRESSION:        /* fail */
