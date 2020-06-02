@@ -20,7 +20,7 @@ static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironmen
 static StatementResult execute_expression_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     StatementResult result;
     ORG_Value *value;
-/*    result->type = NORMAL_STATEMENT_RESULT;*/
+    result.type = NORMAL_STATEMENT_RESULT;
 
     value = org_eval_expression(inter, env, statement->u.expression_s);
 
