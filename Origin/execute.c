@@ -16,11 +16,11 @@
 
 static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement);
 
-//执行表达式语句
+/*执行表达式语句*/
 static StatementResult execute_expression_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     StatementResult result;
     ORG_Value *value;
-//    result->type = NORMAL_STATEMENT_RESULT;
+/*    result->type = NORMAL_STATEMENT_RESULT;*/
 
     value = org_eval_expression(inter, env, statement->u.expression_s);
 
@@ -31,14 +31,14 @@ static StatementResult execute_expression_statement(ORG_Interpreter *inter, Loca
     return result;
 }
 
-//执行全局语句
+/*执行全局语句*/
 static StatementResult execute_global_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     IdentifierList *pos;
     StatementResult result;
     result.type = NORMAL_STATEMENT_RESULT;
 
     if (env == NULL) {
-        //runtime error
+        /*runtime error*/
         printf("runtime error");
         exit(1);
     }
@@ -54,7 +54,7 @@ static StatementResult execute_global_statement(ORG_Interpreter *inter, LocalEnv
 
         variable = org_search_global_variable(inter, pos->name);
         if (variable == NULL) {
-            //runtime error
+            /*runtime error*/
             printf("runtime error");
             exit(1);
         }
@@ -73,7 +73,7 @@ static StatementResult execute_global_statement(ORG_Interpreter *inter, LocalEnv
 
 }
 
-//执行elseif语句
+/*执行elseif语句*/
 static StatementResult execute_elseif(ORG_Interpreter *inter, LocalEnvironment *env, Elseif *elseif_list, ORG_Boolean *executed) {
     StatementResult result;
     ORG_Value *cond;
@@ -84,7 +84,7 @@ static StatementResult execute_elseif(ORG_Interpreter *inter, LocalEnvironment *
     for (pos = elseif_list; pos; pos = pos->next) {
         cond = org_eval_expression(inter, env, pos->condition);
         if (cond->type != ORG_BOOLEAN_VALUE) {
-            //runtime error
+            /*runtime error*/
             printf("runtime error");
             exit(1);
         }
@@ -100,14 +100,14 @@ static StatementResult execute_elseif(ORG_Interpreter *inter, LocalEnvironment *
         return result;
 }
 
-//执行if语句
+/*执行if语句*/
 static StatementResult execute_if_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     StatementResult result;
     ORG_Value *cond;
     result.type = NORMAL_STATEMENT_RESULT;
     cond = org_eval_expression(inter, env, statement->u.if_s.condition);
     if (cond->type != ORG_BOOLEAN_VALUE) {
-        //runtime error
+        /*runtime error*/
         printf("runtime error");
         exit(1);
     }
@@ -128,7 +128,7 @@ static StatementResult execute_if_statement(ORG_Interpreter *inter, LocalEnviron
     return result;
 }
 
-//执行while语句
+/*执行while语句*/
 static StatementResult execute_while_statement(ORG_Interpreter *inter, LocalEnvironment *env,
                         Statement *statement)
 {
@@ -139,7 +139,7 @@ static StatementResult execute_while_statement(ORG_Interpreter *inter, LocalEnvi
     for (;;) {
         cond = org_eval_expression(inter, env, statement->u.while_s.condition);
         if (cond->type != ORG_BOOLEAN_VALUE) {
-            //crb_runtime_error(statement->u.while_s.condition->line_number,NOT_BOOLEAN_TYPE_ERR, MESSAGE_ARGUMENT_END);
+            /*crb_runtime_error(statement->u.while_s.condition->line_number,NOT_BOOLEAN_TYPE_ERR, MESSAGE_ARGUMENT_END);*/
             exit(1);
         }
 
@@ -167,11 +167,11 @@ static StatementResult execute_for_statement(ORG_Interpreter *inter, LocalEnviro
         org_eval_expression(inter, env, statement->u.for_s.init);
     }
     for (;;) {
-        //for的判断循环条件 
+        /*for的判断循环条件 */
         if (statement->u.for_s.condition) {
             cond = org_eval_expression(inter, env, statement->u.for_s.condition);
             if (cond->type != ORG_BOOLEAN_VALUE) {
-                //runtime error
+                /*runtime error*/
                 exit(1);
             }
             if (!cond->u.boolean_value) {
@@ -256,7 +256,7 @@ static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironmen
     return result;
 }
 
-//开放,所以以org开头
+/*开放,所以以org开头*/
 StatementResult org_execute_statement_list(ORG_Interpreter *inter, LocalEnvironment *env, StatementList *list) {
     StatementList *pos;
     StatementResult result;

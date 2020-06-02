@@ -26,10 +26,10 @@ ORG_Value org_nv_print_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Val
     char *ready_print;
 
     if (arg_count < 1) {
-        //org_runtime_error(0, ARGUMENT_TOO_FEW_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_FEW_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     } else if (arg_count > 1) {
-        //org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     }
 
@@ -68,14 +68,14 @@ ORG_Value org_nv_fopen_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Val
     FILE *fp;
 
     if (arg_count < 2) {
-        //org_runtime_error(0, ARGUMENT_TOO_FEW_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_FEW_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     } else if (arg_count > 2) {
-        //org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     }
     if (args[0].type != ORG_STRING_VALUE || args[1].type != ORG_STRING_VALUE) {
-        //org_runtime_error(0, FOPEN_ARGUMENT_TYPE_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, FOPEN_ARGUMENT_TYPE_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     }
 
@@ -101,14 +101,14 @@ ORG_Value org_nv_fclose_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Va
 
     value.type = ORG_NULL_VALUE;
     if (arg_count < 1) {
-        //org_runtime_error(0, ARGUMENT_TOO_FEW_ERR,MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_FEW_ERR,MESSAGE_ARGUMENT_END);*/
         exit(1);
     } else if (arg_count > 1) {
-        //org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     }
     if (args[0].type != ORG_NATIVE_POINTER_VALUE || !check_native_pointer(&args[0])) {
-        //org_runtime_error(0, FCLOSE_ARGUMENT_TYPE_ERR,MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, FCLOSE_ARGUMENT_TYPE_ERR,MESSAGE_ARGUMENT_END);*/
         exit(1);
     }
     fp = args[0].u.native_pointer.pointer;
@@ -125,14 +125,14 @@ ORG_Value org_nv_fgets_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Val
     int ret_len = 0;
 
     if (arg_count < 1) {
-        //org_runtime_error(0, ARGUMENT_TOO_FEW_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_FEW_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     } else if (arg_count > 1) {
-        //org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     }
     if (args[0].type != ORG_NATIVE_POINTER_VALUE || !check_native_pointer(&args[0])) {
-        //org_runtime_error(0, FGETS_ARGUMENT_TYPE_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, FGETS_ARGUMENT_TYPE_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     }
     fp = args[0].u.native_pointer.pointer;
@@ -166,14 +166,14 @@ ORG_Value org_nv_fputs_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Val
 
     value.type = ORG_NULL_VALUE;
     if (arg_count < 2) {
-        //org_runtime_error(0, ARGUMENT_TOO_FEW_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_FEW_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     } else if (arg_count > 2) {
-        //org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, ARGUMENT_TOO_MANY_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     }
     if (args[0].type != ORG_STRING_VALUE || (args[1].type != ORG_NATIVE_POINTER_VALUE || !check_native_pointer(&args[1]))) {
-        //org_runtime_error(0, FPUTS_ARGUMENT_TYPE_ERR, MESSAGE_ARGUMENT_END);
+        /*org_runtime_error(0, FPUTS_ARGUMENT_TYPE_ERR, MESSAGE_ARGUMENT_END);*/
         exit(1);
     }
     fp = args[1].u.native_pointer.pointer;

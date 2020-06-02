@@ -16,7 +16,7 @@ typedef enum {
 } MEM_FailMode;
 
 typedef struct MEM_Controller_tag *MEM_Controller;
-//整体声明一个新类型
+/*整体声明一个新类型*/
 typedef void (*MEM_ErrorHandler)(MEM_Controller, char *, int, char *);
 typedef struct MEM_Storage_tag *MEM_Storage;
 

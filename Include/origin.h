@@ -23,14 +23,14 @@
 #define MESSAGE_ARGUMENT_MAX (256)
 #define LINE_BUF_SIZE   (1024)
 
-//编译时报错的类型
+/*编译时报错的类型*/
 typedef enum {
     PARSE_ERR = 1,
     CHARACTER_INVALID_ERR,
 }CompileError;
 
 
-//运行时错误
+/*运行时错误*/
 typedef enum {
     VARIABLE_NOT_FOUND_ERR = 1,
     FUNCTION_NOT_FOUND_ERR,
@@ -38,40 +38,40 @@ typedef enum {
     NOT_BOOLEAN_TYPE_ERR,
 } RuntimeError;
 
-//定义错误信息结构
+/*定义错误信息结构*/
 typedef struct {
     char *format;
 } MessageFormat;
 
 typedef struct Expression_tag Expression;
 
-//表达式类型
+/*表达式类型*/
 typedef enum {
-    BOOLEAN_EXPRESSION = 1, //布尔类型常量
-    INT_EXPRESSION,         //整数型常量
-    DOUBLE_EXPRESSION,      //实数型常量
-    STRING_EXPRESSION,      //字符串型常量
-    IDENTIFIER_EXPRESSION,  //变量
-    ASSIGN_EXPRESSION,      //赋值表达式
-    ADD_EXPRESSION,         //加法表达式
-    SUB_EXPRESSION,         //减法表达式
-    MUL_EXPRESSION,         //乘法表达式
-    DIV_EXPRESSION,         //除法表达式
-    MOD_EXPRESSION,         //求余表达式
-    EQ_EXPRESSION,          // ==
-    NE_EXPRESSION,          // !=
-    GT_EXPRESSION,          // >
-    GE_EXPRESSION,          // >=
-    LT_EXPRESSION,          // <
-    LE_EXPRESSION,          // <=
-    LOGICAL_AND_EXPRESSION,  // &&
-    LOGICAL_OR_EXPRESSION,   // ||
-    MINUS_EXPRESSION,       // 单目取反
-    FUNCTION_CALL_EXPRESSION, //函数调用表达式
-    NULL_EXPRESSION,        //null表达式
-    BIG_DATA_EXPRESSION,    //大数
+    BOOLEAN_EXPRESSION = 1, /*布尔类型常量*/
+    INT_EXPRESSION,         /*整数型常量*/
+    DOUBLE_EXPRESSION,      /*实数型常量*/
+    STRING_EXPRESSION,      /*字符串型常量*/
+    IDENTIFIER_EXPRESSION,  /*变量*/
+    ASSIGN_EXPRESSION,      /*赋值表达式*/
+    ADD_EXPRESSION,         /*加法表达式*/
+    SUB_EXPRESSION,         /*减法表达式*/
+    MUL_EXPRESSION,         /*乘法表达式*/
+    DIV_EXPRESSION,         /*除法表达式*/
+    MOD_EXPRESSION,         /*求余表达式*/
+    EQ_EXPRESSION,          /* ==*/
+    NE_EXPRESSION,          /* !=*/
+    GT_EXPRESSION,          /* >*/
+    GE_EXPRESSION,          /* >=*/
+    LT_EXPRESSION,          /* <*/
+    LE_EXPRESSION,          /* <=*/
+    LOGICAL_AND_EXPRESSION,  /* &&*/
+    LOGICAL_OR_EXPRESSION,   /* ||*/
+    MINUS_EXPRESSION,       /* 单目取反*/
+    FUNCTION_CALL_EXPRESSION, /*函数调用表达式*/
+    NULL_EXPRESSION,        /*null表达式*/
+    BIG_DATA_EXPRESSION,    /*大数*/
 
-    BIT_LEFT_EXPRESSION,    //位运算 左移
+    BIT_LEFT_EXPRESSION,    /*位运算 左移*/
     BIT_RIGHT_EXPRESSION,
     BIT_OR_EXPRESSION,
     BIT_AND_EXPRESSION,
@@ -83,7 +83,7 @@ typedef enum {
 
 /* 一些宏定义 */
 
-//判断是否是运算符 采用宏可减少函数调用,节约时间
+/*判断是否是运算符 采用宏可减少函数调用,节约时间*/
 #define dkc_is_math_operator(op) \
         ((op) == ADD_EXPRESSION || (op) == SUB_EXPRESSION \
         || (op) == MUL_EXPRESSION || (op) == DIV_EXPRESSION \
@@ -91,41 +91,41 @@ typedef enum {
         || (op) == BIT_RIGHT_EXPRESSION || (op) == BIT_OR_EXPRESSION\
         || (op) == BIT_AND_EXPRESSION || (op) == BIT_XOR_EXPRESSION
 
-//判断是否是判断符
+/*判断是否是判断符*/
 #define dkc_is_compare_operator(op) \
         ((op) == EQ_EXPRESSION || (op) == NE_EXPRESSION \
         || (op) == GT_EXPRESSION || (op) == GE_EXPRESSION \
         || (op) == LT_EXPRESSION || (op) == LE_EXPRESSION)
 
-//判断是否是逻辑操作符
+/*判断是否是逻辑操作符*/
 #define dkc_is_logical_operator(op) \
   ((op) == LOGICAL_AND_EXPRESSION || (op) == LOGICAL_OR_EXPRESSION)
 
-//参数列表
+/*参数列表*/
 typedef struct ArgumentList_tag {
     Expression *expression;
     struct ArgumentList_tag *next;
 } ArgumentList;
 
-//赋值表达式
+/*赋值表达式*/
 typedef struct {
-    char *variable; //变量名
+    char *variable; /*变量名*/
     Expression *operand;
 } AssignExpression;
 
-//二元表达式
+/*二元表达式*/
 typedef struct {
     Expression *left;
     Expression *right;
 } BinaryExpression;
 
-//函数调用表达式
+/*函数调用表达式*/
 typedef struct {
-    char *identifier;//函数名
-    ArgumentList *argument;//函数列表
+    char *identifier;/*函数名*/
+    ArgumentList *argument;/*函数列表*/
 } FunctionCallExpression;
 
-//表达式结构
+/*表达式结构*/
 struct Expression_tag {
     ExpressionType type;
     int line_number;
@@ -144,36 +144,36 @@ struct Expression_tag {
 
 typedef struct Statement_tag Statement;
 
-//代码段列
+/*代码段列*/
 typedef struct StatementList_tag {
     Statement *statement;
     struct Statement_tag *next;
 } StatementList;
 
-//块
+/*块*/
 typedef struct {
     StatementList *statement_list;
 } Block;
 
-//变量名列表
+/*变量名列表*/
 typedef struct IdentifierList_tag {
     char *name;
     struct IdentifierList_tag *next;
 } IdentifierList;
 
-//全局段
+/*全局段*/
 typedef struct {
     IdentifierList *identifier_list;
 } GlobalStatement;
 
-//elseif标记
+/*elseif标记*/
 typedef struct Elseif_tag {
     Expression *condition;
     Block *block;
     struct Elseif_tag *next;
 } Elseif;
 
-//if块,每个if块都配一个else
+/*if块,每个if块都配一个else*/
 typedef struct {
     Expression *condition;
     Block *then_block;
@@ -181,13 +181,13 @@ typedef struct {
     Block *else_block;
 } IfStatement;
 
-//while
+/*while*/
 typedef struct {
     Expression *condition;
     Block       *block;
 } WhileStatement;
 
-//for
+/*for*/
 typedef struct {
     Expression *init;
     Expression *condition;
@@ -195,12 +195,12 @@ typedef struct {
     Block      *block;
 } ForStatement;
 
-//return
+/*return*/
 typedef  struct {
     Expression *return_value;
 } ReturnStatement;
 
-//statement type
+/*statement type*/
 typedef enum {
     EXPRESSION_STATEMENT = 100,
     GLOBAL_STATEMENT,
@@ -213,7 +213,7 @@ typedef enum {
     STATEMENT_TYPE_CONUT_PLUS_1,
 } StatementType;
 
-//statement
+/*statement*/
 struct Statement_tag {
     StatementType   type;
     int             line_number;
@@ -227,15 +227,15 @@ struct Statement_tag {
     } u;
 };
 
-//param list
+/*param list*/
 typedef struct ParameterList_tag {
     char        *name;
     struct ParameterList_tag *next;
 } ParameterList;
 
-// function type
+/* function type*/
 typedef enum {
-    ORIGIN_FUNCTION_DEF = 1,//语言自带的函数
+    ORIGIN_FUNCTION_DEF = 1,/*语言自带的函数*/
     NATIVE_FUNCTION_DEF,
 } FunctionDefineType;
 
@@ -254,7 +254,7 @@ typedef struct FunctionDefine_tag {
     struct FunctionDefine_tag *next;
 } FunctionDefine;
 
-//var tag
+/*var tag*/
 typedef struct Variable_tag {
     char        *name;
     ORG_Value   value;
@@ -287,26 +287,26 @@ typedef struct {
 } LocalEnvironment;
 
 struct ORG_String_tag {
-    int     ref_count;      //引用计数
-    char    *string;        // 字符串本身
-    ORG_Boolean is_literal; // 是否是字面常量
+    int     ref_count;      /*引用计数*/
+    char    *string;        /* 字符串本身*/
+    ORG_Boolean is_literal; /* 是否是字面常量*/
 };
 
 typedef struct {
     ORG_String *string;
 } StringPool;
 
-//解释器
+/*解释器*/
 struct ORG_Interpreter_tag {
-    MEM_Storage         interpreter_storage;    //分析树
-    MEM_Storage         execute_storage;        //运行时
-    Variable            *variable;              //全局变量列表
-    FunctionDefine      *function_list;         //函数定义列表
-    StatementList       *statement_list;        //语句列表
-    int                 current_line_number;    //编译时当前的行号
+    MEM_Storage         interpreter_storage;    /*分析树*/
+    MEM_Storage         execute_storage;        /*运行时*/
+    Variable            *variable;              /*全局变量列表*/
+    FunctionDefine      *function_list;         /*函数定义列表*/
+    StatementList       *statement_list;        /*语句列表*/
+    int                 current_line_number;    /*编译时当前的行号*/
 };
 
-// create.c
+/* create.c*/
 void org_function_define(char *identifier, ParameterList *parameter_list,
                         Block *block);
 ParameterList *org_create_parameter(char *identifier);
@@ -335,7 +335,7 @@ Statement *org_create_global_statement(IdentifierList *identifier_list);
 IdentifierList *org_create_global_identifier(char *identifier);
 IdentifierList *org_chain_identifier(IdentifierList *list, char *identifier);
 
-//elseif statement
+/*elseif statement*/
 Statement *org_create_if_statement(Expression *condition, Block *then_block,
                                     Elseif *elseif_list, Block *else_block);
 Elseif *org_chain_elseif_statement(Expression *expr, Elseif *add);

@@ -65,13 +65,13 @@ MEM_Controller MEM_create_controller(void) {
     MEM_Controller      p;
 
     p = (MEM_Controller)MEM_malloc_func(&st_default_controller, __FILE__, __LINE__, sizeof(struct MEM_Controller_tag));
-    *p = st_default_controller; //控制器初始化
+    *p = st_default_controller; /*控制器初始化*/
 
     return p;
 }
 
 #ifdef DEBUG
-// prepend 一个新的内存块到系统里面去
+/* prepend 一个新的内存块到系统里面去*/
 static void chain_block(MEM_Controller controller, Header *new_header) {
     if (controller->block_header) {
         controller->block_header->s.prev = new_header;
@@ -92,7 +92,7 @@ static void rechain_block(MEM_Controller controller, Header *header) {
     }
 }
 
-//将内存块从链上除去
+/*将内存块从链上除去*/
 static void unchain_block(MEM_Controller controller, Header *header) {
     if (header->s.prev) {
         header->s.prev->s.next = header->s.next;
@@ -104,7 +104,7 @@ static void unchain_block(MEM_Controller controller, Header *header) {
     }
 }
 
-// 初始化一个header
+/* 初始化一个header*/
 void set_header(Header *header, int size, char *filename, int line) {
     header->s.size = size;
     header->s.filename = filename;
@@ -112,7 +112,7 @@ void set_header(Header *header, int size, char *filename, int line) {
     memset(header->s.mark, MARK, (char*)&header[1] - (char*)header->s.mark);
 }
 
-// 将尾部设置为Mark
+/* 将尾部设置为Mark*/
 void set_tail(void *ptr, int alloc_size) {
     char *tail;
     tail = ((char*)ptr) + alloc_size - MARK_SIZE;
@@ -131,7 +131,7 @@ void check_mark_sub(unsigned char *mark, int size)
     }
 }
 
-// 检测一个内存块是否完好无损, 通过头尾的mark进行判断,,如果有损 说明出现了内存越界访问
+/* 检测一个内存块是否完好无损, 通过头尾的mark进行判断,,如果有损 说明出现了内存越界访问*/
 void check_mark(Header *header)
 {
     unsigned char        *tail;
@@ -141,7 +141,7 @@ void check_mark(Header *header)
 }
 #endif /* DEBUG */
 
-// 分配一块指定大小的内存块 并注册到controller中
+/* 分配一块指定大小的内存块 并注册到controller中*/
 void *MEM_malloc_func(MEM_Controller controller, char *filename, int line, size_t size) {
     void        *ptr;
     size_t      alloc_size;
@@ -167,7 +167,7 @@ void *MEM_malloc_func(MEM_Controller controller, char *filename, int line, size_
     return ptr;
 }
 
-// 对已经分配的一段内存进行大小扩充
+/* 对已经分配的一段内存进行大小扩充*/
 void *MEM_realloc_func(MEM_Controller controller, char *filename, int line, void *ptr, size_t size) {
     void        *new_ptr;
     size_t      alloc_size;
@@ -250,7 +250,7 @@ char *MEM_strdup_func(MEM_Controller controller, char *filename, int line, char 
     return(ptr);
 }
 
-// 释放一个内存块
+/* 释放一个内存块*/
 void MEM_free_func(MEM_Controller controller, void *ptr) {
     void        *real_ptr;
 #ifdef DEBUG
@@ -260,12 +260,12 @@ void MEM_free_func(MEM_Controller controller, void *ptr) {
         return;
 
 #ifdef DEBUG
-    // 内存块头部
+    /* 内存块头部*/
     real_ptr = (char*)ptr - sizeof(Header);
-    check_mark((Header*)real_ptr); //检查
+    check_mark((Header*)real_ptr); /*检查*/
     size = ((Header*)real_ptr)->s.size;
-    unchain_block(controller, real_ptr); //将这块内存从链上移除
-    memset(real_ptr, 0xCC, size + sizeof(Header)); // 释放的内存进行初始化,避免内存泄露
+    unchain_block(controller, real_ptr); /*将这块内存从链上移除*/
+    memset(real_ptr, 0xCC, size + sizeof(Header)); /* 释放的内存进行初始化,避免内存泄露*/
 #else
     real_ptr = ptr;
 #endif
@@ -273,7 +273,7 @@ void MEM_free_func(MEM_Controller controller, void *ptr) {
     free(real_ptr);
 }
 
-// 设置内存控制器的一个出错处理函数
+/* 设置内存控制器的一个出错处理函数*/
 void MEM_set_error_handler(MEM_Controller controller, MEM_ErrorHandler handler) {
     controller->error_handler = handler;
 }
@@ -283,7 +283,7 @@ void MEM_set_fail_mode(MEM_Controller controller, MEM_FailMode mode) {
 }
 
 void MEM_dump_blocks_func(MEM_Controller controller, FILE *fp) {
-//#ifdef DEBUG
+/*#ifdef DEBUG*/
     Header *pos;
     int counter = 0;
 
@@ -295,7 +295,7 @@ void MEM_dump_blocks_func(MEM_Controller controller, FILE *fp) {
                 pos->s.filename, pos->s.line, pos->s.size);
         counter++;
     }
-//#endif /* DEBUG */
+/*#endif /* DEBUG */
 }
 
 void MEM_check_block_func(MEM_Controller controller, char *filename, int line, void *p) {

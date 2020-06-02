@@ -35,7 +35,7 @@ ORG_Interpreter *ORG_create_interpreter(void) {
     return interpreter;
 }
 
-// 编译
+/* 编译*/
 void ORG_compile(ORG_Interpreter *inter, FILE *fp) {
     extern int yyparse(void);
     extern FILE  *yyin;
