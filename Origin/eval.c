@@ -13,35 +13,35 @@
 
 /*布尔表达式*/
 static ORG_Value * eval_boolean_expression(ORG_Boolean boolean_value) {
-    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *v = (ORG_Value *) org_malloc(sizeof(ORG_Value));
     v->type = ORG_BOOLEAN_VALUE;
     v->u.boolean_value = boolean_value;
     return v;
 }
 
 static  ORG_Value * eval_int_expression(int int_value) {
-    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *v = (ORG_Value *) org_malloc(sizeof(ORG_Value));
     v->type = ORG_INT_VALUE;
     v->u.int_value = int_value;
     return v;
 }
 
 static ORG_Value * eval_double_expression(double double_value) {
-    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *v = (ORG_Value *) org_malloc(sizeof(ORG_Value));
     v->type = ORG_DOUBLE_VALUE;
     v->u.double_value = double_value;
     return  v;
 }
 
 static  ORG_Value * eval_string_expression(ORG_Interpreter *inter, char *string_value) {
-    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *v = (ORG_Value *) org_malloc(sizeof(ORG_Value));
     v->type = ORG_STRING_VALUE;
     v->u.string_value = org_literal_to_org_string(inter, string_value);
     return v;
 }
 
 static ORG_Value * eval_null_expression(void) {
-    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *v = (ORG_Value *) org_malloc(sizeof(ORG_Value));
     v->type = ORG_NULL_VALUE;
     return v;
 }
@@ -368,7 +368,7 @@ ORG_Value * org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment 
 
     ORG_Value *left_val = NULL;
     ORG_Value *right_val = NULL;
-    ORG_Value *result = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *result = (ORG_Value *) org_malloc(sizeof(ORG_Value));
 
     left_val = eval_expression(inter, env, left);
     right_val = eval_expression(inter, env, right);
@@ -441,7 +441,7 @@ ORG_Value * org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment 
 static ORG_Value * eval_logical_and_or_expression(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op, Expression *left, Expression *right) {
     ORG_Value *left_val = NULL;
     ORG_Value *right_val = NULL;
-    ORG_Value *result = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *result = (ORG_Value *) org_malloc(sizeof(ORG_Value));
 
     result->type = ORG_BOOLEAN_VALUE;
     left_val = eval_expression(inter, env, left);
@@ -478,7 +478,7 @@ static ORG_Value * eval_logical_and_or_expression(ORG_Interpreter *inter, LocalE
 /* 单元取反*/
 ORG_Value * org_eval_minus_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *operand) {
     ORG_Value * operand_val; /*操作数*/
-    ORG_Value *result = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *result = (ORG_Value *) org_malloc(sizeof(ORG_Value));
 
     operand_val = eval_expression(inter, env, operand);
     if (operand_val->type == ORG_INT_VALUE) {
@@ -555,7 +555,7 @@ static ORG_Value * call_native_function(ORG_Interpreter *inter, LocalEnvironment
 
 /* 函数调用*/
 static ORG_Value * call_origin_function(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr, FunctionDefine *func) {
-    ORG_Value *value = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *value = (ORG_Value *) org_malloc(sizeof(ORG_Value));
     StatementResult result;
     ArgumentList *arg_p;
     ParameterList *param_p;
@@ -603,7 +603,7 @@ static ORG_Value * call_origin_function(ORG_Interpreter *inter, LocalEnvironment
  * 调用函数时执行
  */
 static ORG_Value * eval_function_call_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
-    ORG_Value *value = (ORG_Value *) malloc(sizeof(ORG_Value));
+    ORG_Value *value = (ORG_Value *) org_malloc(sizeof(ORG_Value));
     FunctionDefine *func;
 
     char *identifier = expr->u.function_call_expression.identifier;
