@@ -1,10 +1,10 @@
 TARGET = origin
 CC = gcc
-YY = yacc
+YY = bison
 CFLAGS = -c -g -Wall -Wswitch-enum -pedantic -DDEBUG
 OBJS = 	\
 		lex.yy.o \
-		y.tab.o	\
+		origin.tab.o	\
 		main.o\
 		Origin/interface.o\
 		Origin/create.o \
@@ -22,19 +22,19 @@ COREDIR = Origin
 $(TARGET):$(OBJS)
 	$(CC) $(OBJS) -o $@ -lm
 
-y.tab.h:Parser/origin.y
+origin.tab.h:Parser/origin.y
 	$(YY) -dv Parser/origin.y
 
-y.tab.c:Parser/origin.y
+origin.tab.c:Parser/origin.y
 	$(YY) -dv Parser/origin.y
 
-lex.yy.c:Parser/origin.l Parser/origin.y y.tab.h
+lex.yy.c:Parser/origin.l Parser/origin.y origin.tab.h
 	lex Parser/origin.l
 
-y.tab.o:y.tab.c Include/origin.h Include/MEM.h
+origin.tab.o:origin.tab.c Include/origin.h Include/MEM.h
 	$(CC) -c $*.c $(INCLUDES)
 
-lex.yy.o:lex.yy.c Include/origin.h Include/MEM.h y.tab.h
+lex.yy.o:lex.yy.c Include/origin.h Include/MEM.h origin.tab.h
 	$(CC) -c -g $*.c $(INCLUDES)
 
 bignum.o:native_obj/bignum/bignum.c native_obj/bignum/bignum.h
@@ -67,5 +67,5 @@ util.o: $(COREDIR)/util.c Include/MEM.h Include/DBG.h Include/origin.h Include/O
 
 
 clean:
-	rm -f *.o $(COREDIR)/*.o lex.yy.c y.tab.c y.tab.h $(TARGET) *~
+	rm -f *.o $(COREDIR)/*.o lex.yy.c y.tab.c origin.tab.h $(TARGET) $(TARGET).tab.c $(TARGET).tab.h *~
 

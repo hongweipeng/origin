@@ -6,7 +6,7 @@
     #include <string.h>
     #include "DBG.h"
     #include "origin.h"
-    #include "y.tab.h"
+    #include "origin.tab.h"
 
     /*
     解析一个文件完毕后会调用yywrap,返回表示1结束,返回0表示继续
