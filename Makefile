@@ -2,8 +2,20 @@ TARGET = origin
 CC = gcc
 YY = yacc
 CFLAGS = -c -g -Wall -Wswitch-enum -pedantic -DDEBUG
-OBJS = lex.yy.o y.tab.o main.o Origin/interface.o Origin/create.o Origin/execute.o\
-	   Origin/eval.o string.o string_pool.o Origin/util.o Origin/native.o mem.o bignum.o
+OBJS = 	\
+		lex.yy.o \
+		y.tab.o	\
+		main.o\
+		Origin/interface.o\
+		Origin/create.o \
+		Origin/execute.o\
+		Origin/eval.o \
+		string.o \
+		string_pool.o \
+		Origin/util.o \
+		Origin/native.o \
+		mem.o bignum.o
+
 INCLUDES = -I. -I./Include
 COREDIR = Origin
 
