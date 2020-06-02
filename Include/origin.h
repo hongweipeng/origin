@@ -69,7 +69,6 @@ typedef enum {
     MINUS_EXPRESSION,       /* 单目取反*/
     FUNCTION_CALL_EXPRESSION, /*函数调用表达式*/
     NULL_EXPRESSION,        /*null表达式*/
-    BIG_DATA_EXPRESSION,    /*大数*/
 
     BIT_LEFT_EXPRESSION,    /*位运算 左移*/
     BIT_RIGHT_EXPRESSION,
