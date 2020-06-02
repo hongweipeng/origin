@@ -19,13 +19,13 @@ static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironmen
 //执行表达式语句
 static StatementResult execute_expression_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     StatementResult result;
-    ORG_Value value;
-    result.type = NORMAL_STATEMENT_RESULT;
+    ORG_Value *value;
+//    result->type = NORMAL_STATEMENT_RESULT;
 
     value = org_eval_expression(inter, env, statement->u.expression_s);
 
-    if (value.type == ORG_STRING_VALUE) {
-        org_release_string(value.u.string_value);
+    if (value->type == ORG_STRING_VALUE) {
+        org_release_string(value->u.string_value);
     }
 
     return result;
@@ -76,20 +76,20 @@ static StatementResult execute_global_statement(ORG_Interpreter *inter, LocalEnv
 //执行elseif语句
 static StatementResult execute_elseif(ORG_Interpreter *inter, LocalEnvironment *env, Elseif *elseif_list, ORG_Boolean *executed) {
     StatementResult result;
-    ORG_Value cond;
+    ORG_Value *cond;
     Elseif *pos;
     *executed = ORG_FALSE;
     result.type = NORMAL_STATEMENT_RESULT;
 
     for (pos = elseif_list; pos; pos = pos->next) {
         cond = org_eval_expression(inter, env, pos->condition);
-        if (cond.type != ORG_BOOLEAN_VALUE) {
+        if (cond->type != ORG_BOOLEAN_VALUE) {
             //runtime error
             printf("runtime error");
             exit(1);
         }
 
-        if (cond.u.boolean_value) {
+        if (cond->u.boolean_value) {
             result = org_execute_statement_list(inter, env, pos->block->statement_list);
             *executed = ORG_TRUE;
             if (result.type != NORMAL_STATEMENT_RESULT)
@@ -103,16 +103,16 @@ static StatementResult execute_elseif(ORG_Interpreter *inter, LocalEnvironment *
 //执行if语句
 static StatementResult execute_if_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     StatementResult result;
-    ORG_Value cond;
+    ORG_Value *cond;
     result.type = NORMAL_STATEMENT_RESULT;
     cond = org_eval_expression(inter, env, statement->u.if_s.condition);
-    if (cond.type != ORG_BOOLEAN_VALUE) {
+    if (cond->type != ORG_BOOLEAN_VALUE) {
         //runtime error
         printf("runtime error");
         exit(1);
     }
 
-    if (cond.u.boolean_value) {
+    if (cond->u.boolean_value) {
         result = org_execute_statement_list(inter, env, statement->u.if_s.then_block->statement_list);
     } else {
         ORG_Boolean elseif_executed;
@@ -133,17 +133,17 @@ static StatementResult execute_while_statement(ORG_Interpreter *inter, LocalEnvi
                         Statement *statement)
 {
     StatementResult result;
-    ORG_Value   cond;
+    ORG_Value *cond;
 
     result.type = NORMAL_STATEMENT_RESULT;
     for (;;) {
         cond = org_eval_expression(inter, env, statement->u.while_s.condition);
-        if (cond.type != ORG_BOOLEAN_VALUE) {
+        if (cond->type != ORG_BOOLEAN_VALUE) {
             //crb_runtime_error(statement->u.while_s.condition->line_number,NOT_BOOLEAN_TYPE_ERR, MESSAGE_ARGUMENT_END);
             exit(1);
         }
 
-        if (!cond.u.boolean_value)
+        if (!cond->u.boolean_value)
             break;
 
         result = org_execute_statement_list(inter, env, statement->u.while_s.block->statement_list);
@@ -161,7 +161,7 @@ static StatementResult execute_while_statement(ORG_Interpreter *inter, LocalEnvi
 
 static StatementResult execute_for_statement(ORG_Interpreter *inter, LocalEnvironment *env, Statement *statement) {
     StatementResult result;
-    ORG_Value cond;
+    ORG_Value *cond;
     result.type = NORMAL_STATEMENT_RESULT;
     if (statement->u.for_s.init) {
         org_eval_expression(inter, env, statement->u.for_s.init);
@@ -170,11 +170,11 @@ static StatementResult execute_for_statement(ORG_Interpreter *inter, LocalEnviro
         //for的判断循环条件 
         if (statement->u.for_s.condition) {
             cond = org_eval_expression(inter, env, statement->u.for_s.condition);
-            if (cond.type != ORG_BOOLEAN_VALUE) {
+            if (cond->type != ORG_BOOLEAN_VALUE) {
                 //runtime error
                 exit(1);
             }
-            if (!cond.u.boolean_value) {
+            if (!cond->u.boolean_value) {
                 break;
             }
         }
@@ -199,7 +199,8 @@ static StatementResult execute_return_statement(ORG_Interpreter *inter, LocalEnv
 
     result.type = RETURN_STATEMENT_RESULT;
     if(statement->u.return_s.return_value) {
-        result.u.return_value = org_eval_expression(inter, env, statement->u.return_s.return_value);
+        ORG_Value *return_value = org_eval_expression(inter, env, statement->u.return_s.return_value);
+        result.u.return_value = *return_value;
     } else {
         result.u.return_value.type = ORG_NULL_VALUE;
     }

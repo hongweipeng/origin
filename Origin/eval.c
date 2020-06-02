@@ -12,37 +12,37 @@
 #include "ORG_dev.h"
 
 //布尔表达式
-static ORG_Value eval_boolean_expression(ORG_Boolean boolean_value) {
-    ORG_Value v;
-    v.type = ORG_BOOLEAN_VALUE;
-    v.u.boolean_value = boolean_value;
+static ORG_Value * eval_boolean_expression(ORG_Boolean boolean_value) {
+    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    v->type = ORG_BOOLEAN_VALUE;
+    v->u.boolean_value = boolean_value;
     return v;
 }
 
-static  ORG_Value eval_int_expression(int int_value) {
-    ORG_Value v;
-    v.type = ORG_INT_VALUE;
-    v.u.int_value = int_value;
+static  ORG_Value * eval_int_expression(int int_value) {
+    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    v->type = ORG_INT_VALUE;
+    v->u.int_value = int_value;
     return v;
 }
 
-static ORG_Value eval_double_expression(double double_value) {
-    ORG_Value v;
-    v.type = ORG_DOUBLE_VALUE;
-    v.u.double_value = double_value;
+static ORG_Value * eval_double_expression(double double_value) {
+    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    v->type = ORG_DOUBLE_VALUE;
+    v->u.double_value = double_value;
     return  v;
 }
 
-static  ORG_Value eval_string_expression(ORG_Interpreter *inter, char *string_value) {
-    ORG_Value v;
-    v.type = ORG_STRING_VALUE;
-    v.u.string_value = org_literal_to_org_string(inter, string_value);
+static  ORG_Value * eval_string_expression(ORG_Interpreter *inter, char *string_value) {
+    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    v->type = ORG_STRING_VALUE;
+    v->u.string_value = org_literal_to_org_string(inter, string_value);
     return v;
 }
 
-static ORG_Value eval_null_expression(void) {
-    ORG_Value v;
-    v.type = ORG_NULL_VALUE;
+static ORG_Value * eval_null_expression(void) {
+    ORG_Value *v = (ORG_Value *) malloc(sizeof(ORG_Value));
+    v->type = ORG_NULL_VALUE;
     return v;
 }
 
@@ -74,42 +74,42 @@ static Variable *search_global_variable_form_env(ORG_Interpreter *inter, LocalEn
 }
 
 //变量名出现在表达式中,此函数被调用
-static ORG_Value eval_identifier_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
-    ORG_Value v;
+static ORG_Value * eval_identifier_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
+    ORG_Value *v = NULL;
     Variable *vp;
 
     //首先查找局部变量
     vp = org_search_local_variable(env, expr->u.identifier);
     if (vp != NULL) {
-        v = vp->value;
+        v = &(vp->value);
     } else {
         //如果没有,则通过全局查找
         vp = search_global_variable_form_env(inter, env, expr->u.identifier);
         if (vp != NULL) {
-            v = vp->value;
+            v = &(vp->value);
         } else {
             //仍然没有则报错
             //runtime error
             exit(1);
         }
     }
-    refer_if_string(&v);
+    refer_if_string(v);
     return  v;
 }
 
-static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr);
+static ORG_Value * eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr);
 
 /**
  * 变量赋值时调用
  * identifier
  */
-static ORG_Value* eval_assign_expression(ORG_Interpreter *inter, LocalEnvironment *env, char *identifier, Expression *expression) {
+static ORG_Value * eval_assign_expression(ORG_Interpreter *inter, LocalEnvironment *env, char *identifier, Expression *expression) {
     ORG_Value *v;
     Variable *left;
 
     //获得右侧表达式结果
-    ORG_Value right = eval_expression(inter, env, expression);
-    v = &right;
+    ORG_Value *right = eval_expression(inter, env, expression);
+    v = right;
 
     //查找局部变量
     left = org_search_local_variable(env, identifier);
@@ -363,12 +363,12 @@ ORG_String *chain_string(ORG_Interpreter *inter, ORG_String *left, ORG_String *r
 /**
  * 函数对所有二元运算进行评估
  */
-ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *env,
+ORG_Value * org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *env,
                                      ExpressionType op, Expression *left, Expression *right) {
 
-    ORG_Value left_val;
-    ORG_Value right_val;
-    ORG_Value result;
+    ORG_Value *left_val = NULL;
+    ORG_Value *right_val = NULL;
+    ORG_Value *result = (ORG_Value *) malloc(sizeof(ORG_Value));
 
     left_val = eval_expression(inter, env, left);
     right_val = eval_expression(inter, env, right);
@@ -386,46 +386,46 @@ ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *e
      * 8 字符串 + 布尔    右边转换为true或false的字符串
      * 9 字符串 + null    右边转换为null的字符串
      */
-    if (left_val.type == ORG_INT_VALUE && right_val.type == ORG_INT_VALUE) { //  1 + 2
-        eval_binary_int(inter, op, left_val.u.int_value, right_val.u.int_value, &result, left->line_number);
-    } else if (left_val.type == ORG_DOUBLE_VALUE && right_val.type == ORG_DOUBLE_VALUE) { // 1.0 + 2.3
-        eval_binary_double(inter, op , left_val.u.double_value, right_val.u.double_value, &result, left->line_number);
-    } else if (left_val.type == ORG_INT_VALUE && right_val.type == ORG_DOUBLE_VALUE) { // 1 + 2.0
-        left_val.u.double_value = (double) left_val.u.int_value;
-        eval_binary_double(inter, op , left_val.u.double_value, right_val.u.double_value, &result, left->line_number);
-    } else if (left_val.type == ORG_DOUBLE_VALUE && right_val.type == ORG_INT_VALUE) { // 3.0 + 1
-        right_val.u.double_value = (double) right_val.u.int_value;
-        eval_binary_double(inter, op , left_val.u.double_value, right_val.u.double_value, &result, left->line_number);
-    } else if (left_val.type == ORG_STRING_VALUE && op == ADD_EXPRESSION) {
+    if (left_val->type == ORG_INT_VALUE && right_val->type == ORG_INT_VALUE) { //  1 + 2
+        eval_binary_int(inter, op, left_val->u.int_value, right_val->u.int_value, result, left->line_number);
+    } else if (left_val->type == ORG_DOUBLE_VALUE && right_val->type == ORG_DOUBLE_VALUE) { // 1.0 + 2.3
+        eval_binary_double(inter, op , left_val->u.double_value, right_val->u.double_value, result, left->line_number);
+    } else if (left_val->type == ORG_INT_VALUE && right_val->type == ORG_DOUBLE_VALUE) { // 1 + 2.0
+        left_val->u.double_value = (double) left_val->u.int_value;
+        eval_binary_double(inter, op , left_val->u.double_value, right_val->u.double_value, result, left->line_number);
+    } else if (left_val->type == ORG_DOUBLE_VALUE && right_val->type == ORG_INT_VALUE) { // 3.0 + 1
+        right_val->u.double_value = (double) right_val->u.int_value;
+        eval_binary_double(inter, op , left_val->u.double_value, right_val->u.double_value, result, left->line_number);
+    } else if (left_val->type == ORG_STRING_VALUE && op == ADD_EXPRESSION) {
         char buf[LINE_BUF_SIZE];
         ORG_String *right_str;
 
-        if (right_val.type == ORG_INT_VALUE) {
-            sprintf(buf, "%d", right_val.u.int_value);
+        if (right_val->type == ORG_INT_VALUE) {
+            sprintf(buf, "%d", right_val->u.int_value);
             right_str = org_create_origin_string(inter, MEM_strdup(buf));
-        } else if(right_val.type == ORG_DOUBLE_VALUE) {
-            sprintf(buf, "%lf", right_val.u.double_value);
+        } else if(right_val->type == ORG_DOUBLE_VALUE) {
+            sprintf(buf, "%lf", right_val->u.double_value);
             right_str = org_create_origin_string(inter, MEM_strdup(buf));
-        } else if (right_val.type == ORG_BOOLEAN_VALUE) {
-            right_str = (right_val.u.boolean_value) ? org_create_origin_string(inter, MEM_strdup("true")) : org_create_origin_string(inter, MEM_strdup("false"));
-        } else if (right_val.type == ORG_STRING_VALUE) {
-            right_str = right_val.u.string_value;
+        } else if (right_val->type == ORG_BOOLEAN_VALUE) {
+            right_str = (right_val->u.boolean_value) ? org_create_origin_string(inter, MEM_strdup("true")) : org_create_origin_string(inter, MEM_strdup("false"));
+        } else if (right_val->type == ORG_STRING_VALUE) {
+            right_str = right_val->u.string_value;
         }
 
-        result.type = ORG_STRING_VALUE;
-        result.u.string_value = chain_string(inter, left_val.u.string_value, right_str);
-    } else if (left_val.type == ORG_BOOLEAN_VALUE && right_val.type == ORG_BOOLEAN_VALUE) {
+        result->type = ORG_STRING_VALUE;
+        result->u.string_value = chain_string(inter, left_val->u.string_value, right_str);
+    } else if (left_val->type == ORG_BOOLEAN_VALUE && right_val->type == ORG_BOOLEAN_VALUE) {
         //
 
-        result.type = ORG_BOOLEAN_VALUE;
-        result.u.boolean_value = eval_binary_boolean(inter, op, left_val.u.boolean_value, right_val.u.boolean_value, left->line_number);
-    } else if (left_val.type == ORG_STRING_VALUE && right_val.type == ORG_STRING_VALUE) {
+        result->type = ORG_BOOLEAN_VALUE;
+        result->u.boolean_value = eval_binary_boolean(inter, op, left_val->u.boolean_value, right_val->u.boolean_value, left->line_number);
+    } else if (left_val->type == ORG_STRING_VALUE && right_val->type == ORG_STRING_VALUE) {
         // "12" > "abc"
-        result.type == ORG_DOUBLE_VALUE;
-        result.u.boolean_value = eval_compare_string(op, &left_val, &right_val, left->line_number);
-    } else if (left_val.type == ORG_NULL_VALUE || right_val.type == ORG_NULL_VALUE) {
-        result.type = ORG_NULL_VALUE;
-        result.u.boolean_value = eval_binary_null(inter, op, &left_val, &right_val, left->line_number);
+        result->type == ORG_DOUBLE_VALUE;
+        result->u.boolean_value = eval_compare_string(op, left_val, right_val, left->line_number);
+    } else if (left_val->type == ORG_NULL_VALUE || right_val->type == ORG_NULL_VALUE) {
+        result->type = ORG_NULL_VALUE;
+        result->u.boolean_value = eval_binary_null(inter, op, left_val, right_val, left->line_number);
     } else {
         char *op_str = org_get_operator_string(op);
         //runtime error
@@ -438,27 +438,27 @@ ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *e
 }
 
 // 布尔运算 支持短路求值
-static ORG_Value eval_logical_and_or_expression(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op, Expression *left, Expression *right) {
-    ORG_Value left_val;
-    ORG_Value right_val;
-    ORG_Value result;
+static ORG_Value * eval_logical_and_or_expression(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op, Expression *left, Expression *right) {
+    ORG_Value *left_val = NULL;
+    ORG_Value *right_val = NULL;
+    ORG_Value *result = (ORG_Value *) malloc(sizeof(ORG_Value));
 
-    result.type = ORG_BOOLEAN_VALUE;
+    result->type = ORG_BOOLEAN_VALUE;
     left_val = eval_expression(inter, env, left);
 
-    if (left_val.type != ORG_BOOLEAN_VALUE) {
+    if (left_val->type != ORG_BOOLEAN_VALUE) {
         //runtime error
         exit(1);
     }
 
     if (op == LOGICAL_AND_EXPRESSION) {
-        if (!left_val.u.boolean_value) {
-            result.u.boolean_value = ORG_FALSE;
+        if (!left_val->u.boolean_value) {
+            result->u.boolean_value = ORG_FALSE;
             return result;//短路求值
         }
     } else if (op == LOGICAL_OR_EXPRESSION) {
-        if (left_val.u.boolean_value) {
-            result.u.boolean_value = ORG_TRUE;
+        if (left_val->u.boolean_value) {
+            result->u.boolean_value = ORG_TRUE;
             return result;
         }
     } else {
@@ -466,27 +466,27 @@ static ORG_Value eval_logical_and_or_expression(ORG_Interpreter *inter, LocalEnv
     }
 
     right_val = eval_expression(inter, env, right);
-    if (right_val.type != ORG_BOOLEAN_VALUE) {
+    if (right_val->type != ORG_BOOLEAN_VALUE) {
         //runtime error
         exit(1);
     }
 
-    result.u.boolean_value = right_val.u.boolean_value;
+    result->u.boolean_value = right_val->u.boolean_value;
     return result;
 }
 
 // 单元取反
-ORG_Value org_eval_minus_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *operand) {
-    ORG_Value operand_val; //操作数
-    ORG_Value result;
+ORG_Value * org_eval_minus_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *operand) {
+    ORG_Value * operand_val; //操作数
+    ORG_Value *result = (ORG_Value *) malloc(sizeof(ORG_Value));
 
     operand_val = eval_expression(inter, env, operand);
-    if (operand_val.type == ORG_INT_VALUE) {
-        result.type = ORG_INT_VALUE;
-        result.u.int_value = - operand_val.u.int_value;
-    } else if (operand_val.type == ORG_DOUBLE_VALUE) {
-        result.type = ORG_DOUBLE_VALUE;
-        result.u.double_value = -operand_val.u.double_value;
+    if (operand_val->type == ORG_INT_VALUE) {
+        result->type = ORG_INT_VALUE;
+        result->u.int_value = - operand_val->u.int_value;
+    } else if (operand_val->type == ORG_DOUBLE_VALUE) {
+        result->type = ORG_DOUBLE_VALUE;
+        result->u.double_value = -operand_val->u.double_value;
     } else {
         //runtime error
         exit(1);
@@ -524,9 +524,9 @@ static void dispose_local_environment(ORG_Interpreter *inter, LocalEnvironment *
     MEM_free(env);
 }
 
-static ORG_Value call_native_function(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr, ORG_NativeFunctionPro *proc) {
+static ORG_Value * call_native_function(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr, ORG_NativeFunctionPro *proc) {
     //proc 是个函数指针
-    ORG_Value value;
+    ORG_Value *value = NULL;
     int arg_count;
     ArgumentList *arg_p;
     ORG_Value *args;
@@ -539,10 +539,12 @@ static ORG_Value call_native_function(ORG_Interpreter *inter, LocalEnvironment *
     args = MEM_malloc(sizeof(ORG_Value) * arg_count);
 
     for (i = 0, arg_p = expr->u.function_call_expression.argument; arg_p; arg_p = arg_p->next) {
-        args[i] = eval_expression(inter, env, arg_p->expression);
+        ORG_Value *arg = eval_expression(inter, env, arg_p->expression);
+        args[i] = *arg;
         i++;
     }
-    value = proc(inter, arg_count, args);
+    ORG_Value ret = proc(inter, arg_count, args);
+    value = &ret;
     for (i = 0; i < arg_count; i++) {
         release_if_string(&args[i]);
     }
@@ -552,8 +554,8 @@ static ORG_Value call_native_function(ORG_Interpreter *inter, LocalEnvironment *
 }
 
 // 函数调用
-static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr, FunctionDefine *func) {
-    ORG_Value value;
+static ORG_Value * call_origin_function(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr, FunctionDefine *func) {
+    ORG_Value *value = (ORG_Value *) malloc(sizeof(ORG_Value));
     StatementResult result;
     ArgumentList *arg_p;
     ParameterList *param_p;
@@ -570,13 +572,13 @@ static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *
             arg_p;
             arg_p = arg_p->next, param_p = param_p->next) {
 
-        ORG_Value arg_val;
+        ORG_Value *arg_val;
         if (param_p == NULL) { // param_p被用尽,说明实参过多
             //runtime error
             exit(1);
         }
         arg_val = eval_expression(inter, env, arg_p->expression);
-        org_add_local_variable(local_env, param_p->name, &arg_val);
+        org_add_local_variable(local_env, param_p->name, arg_val);
     }
 
     if (param_p) { // param_p 剩余,说明实参数量不够
@@ -587,10 +589,11 @@ static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *
     result = org_execute_statement_list(inter, local_env, func->u.origin_f.block->statement_list);
 
     if (result.type == RETURN_STATEMENT_RESULT) {
-        value = result.u.return_value;
+        //free(value);
+        value = &result.u.return_value;
     } else {
         //若函数没有return，则默认有null的返回
-        value.type = ORG_NULL_VALUE;
+        value->type = ORG_NULL_VALUE;
     }
     dispose_local_environment(inter, local_env);
     return value;
@@ -599,8 +602,8 @@ static ORG_Value call_origin_function(ORG_Interpreter *inter, LocalEnvironment *
 /**
  * 调用函数时执行
  */
-static ORG_Value eval_function_call_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
-    ORG_Value value;
+static ORG_Value * eval_function_call_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
+    ORG_Value *value = (ORG_Value *) malloc(sizeof(ORG_Value));
     FunctionDefine *func;
 
     char *identifier = expr->u.function_call_expression.identifier;
@@ -627,9 +630,8 @@ static ORG_Value eval_function_call_expression(ORG_Interpreter *inter, LocalEnvi
 
 
 // 运行表达式 或者表达式结果
-static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
-    ORG_Value v;
-    ORG_Value *tmp = NULL;
+static ORG_Value * eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
+    ORG_Value *v = NULL;
 
     switch (expr->type) {
         case BOOLEAN_EXPRESSION:
@@ -648,8 +650,7 @@ static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, 
             v = eval_identifier_expression(inter, env, expr);
             break;
         case ASSIGN_EXPRESSION:
-            tmp = eval_assign_expression(inter, env, expr->u.assign_expression.variable, expr->u.assign_expression.operand);
-            v = *tmp;
+            v = eval_assign_expression(inter, env, expr->u.assign_expression.variable, expr->u.assign_expression.operand);;
             break;
         case ADD_EXPRESSION:        /* fail */
         case SUB_EXPRESSION:        /* fail */
@@ -691,7 +692,7 @@ static ORG_Value eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, 
     return v;
 }
 
-ORG_Value org_eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
+ORG_Value * org_eval_expression(ORG_Interpreter *inter, LocalEnvironment *env, Expression *expr) {
     return eval_expression(inter, env, expr);
 }
 

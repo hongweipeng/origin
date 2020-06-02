@@ -131,10 +131,10 @@ Expression *org_create_binary_expression(ExpressionType op, Expression *left, Ex
     if ((left->type == INT_EXPRESSION || left->type == DOUBLE_EXPRESSION)
             && (right->type == INT_EXPRESSION || right == DOUBLE_EXPRESSION)) {
 
-        ORG_Value value;
+        ORG_Value *value;
         /* Overwriting left hand expression. */
         value = org_eval_binary_expression(org_get_current_interpreter(), NULL, op, left, right);
-        *left = convert_value_to_expression(&value);
+        *left = convert_value_to_expression(value);
         return left;
     } else {
         Expression *exp;
@@ -148,10 +148,10 @@ Expression *org_create_binary_expression(ExpressionType op, Expression *left, Ex
 //创建 单元取反 表达式
 Expression *org_create_minus_expression(Expression *operand) {
     if (operand->type == INT_EXPRESSION || operand->type == DOUBLE_EXPRESSION) {
-        ORG_Value v;
+        ORG_Value *v;
         v = org_eval_minus_expression(org_get_current_interpreter(), NULL, operand);
         /* Notice! Overwriting operand expression. */
-        *operand = convert_value_to_expression(&v);
+        *operand = convert_value_to_expression(v);
         return operand;
     } else {
         Expression      *exp;

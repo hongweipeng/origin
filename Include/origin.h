@@ -365,11 +365,11 @@ StatementResult org_execute_statement_list(ORG_Interpreter *inter, LocalEnvironm
 StatementResult org_execute_statement_list(ORG_Interpreter *inter, LocalEnvironment *env, StatementList *list);
 
 /* eval.c */
-ORG_Value org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op,
+ORG_Value * org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op,
                                      Expression *left, Expression *right);
-ORG_Value org_eval_minus_expression(ORG_Interpreter *inter,
+ORG_Value * org_eval_minus_expression(ORG_Interpreter *inter,
                                     LocalEnvironment *env, Expression *operand);
-ORG_Value org_eval_expression(ORG_Interpreter *inter,
+ORG_Value * org_eval_expression(ORG_Interpreter *inter,
                               LocalEnvironment *env, Expression *expr);
 
 /* string_pool.c */
