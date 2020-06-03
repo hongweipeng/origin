@@ -1,0 +1,14 @@
+
+a = true;
+b = false;
+
+if (a || b){}else{print("error");}
+if (a && b){print("error");}else{}
+
+if (a != true) {print("error");} else{}
+if (b != true) {}else{print("error");}
+
+a = false;
+b = true;
+if (a || b){}else{print("error");}
+if (a && b){print("error");}else{}
