@@ -57,14 +57,11 @@ char *org_create_identifier(char *str) {
 
 
 char *org_value_to_string(ORG_Value value){
-    char *str;
-    size_t size;
-    char buf[LINE_BUF_SIZE];
+    char *buf = org_malloc(LINE_BUF_SIZE);
     if (value.type == ORG_INT_VALUE) {
         sprintf(buf, "%d", value.u.int_value);
     }
-
-    return buf;
+    return (char *) buf;
 }
 
 

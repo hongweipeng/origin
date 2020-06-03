@@ -31,7 +31,7 @@ typedef enum {
     ORG_DOUBLE_VALUE,       /*浮点型*/
     ORG_STRING_VALUE,       /*字符串型*/
     ORG_NATIVE_POINTER_VALUE, /*复杂数据类型 任意类型，包括基本数据类型*/
-    ORG_NULL_VALUE,         /*空值，未设置类型*/
+    ORG_NULL_VALUE         /*空值，未设置类型*/
 } ORG_ValueType;
 
 /*任意类型定义*/

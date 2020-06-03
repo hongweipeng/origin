@@ -1,6 +1,6 @@
-//
-// Created by admin on 2020/6/3.
-//
+/**
+ * Created by hongweipeng on 2020/6/3.
+ */
 
 #ifndef ORIGIN_INTOBJECT_H
 #define ORIGIN_INTOBJECT_H
@@ -22,4 +22,4 @@ ORG_Value * org_int_new(void);
 ORG_Value * org_int_from_int(int num);
 ORG_Value * binary_int(ORG_Value *left, ORG_Value *right, ExpressionType op);
 
-#endif //ORIGIN_INTOBJECT_H
+#endif

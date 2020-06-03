@@ -1,6 +1,6 @@
-//
-// Created by admin on 2020/6/3.
-//
+/**
+ * Created by admin on 2020/6/3.
+ */
 
 #ifndef ORIGIN_BOOLOBJECT_H
 #define ORIGIN_BOOLOBJECT_H
@@ -21,4 +21,4 @@ extern ORG_Bool _ORG_TrueStruct, _ORG_FalseStruct;
 #define ORG_True ((ORG_Value*) &_ORG_TrueStruct)
 #define ORG_False ((ORG_Value*) &_ORG_FalseStruct)
 
-#endif //ORIGIN_BOOLOBJECT_H
+#endif

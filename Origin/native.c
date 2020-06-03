@@ -22,8 +22,8 @@ ORG_Value org_nv_print_proc(ORG_Interpreter *interpreter, int arg_count, ORG_Val
     ORG_Value value;
 
     value.type = ORG_NULL_VALUE;
-    size_t size = 0;
-    char *ready_print;
+    /*size_t size = 0;*/
+    /*char *ready_print;*/
 
     if (arg_count < 1) {
         /*org_runtime_error(0, ARGUMENT_TOO_FEW_ERR, MESSAGE_ARGUMENT_END);*/

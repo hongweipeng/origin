@@ -26,7 +26,7 @@
 /*编译时报错的类型*/
 typedef enum {
     PARSE_ERR = 1,
-    CHARACTER_INVALID_ERR,
+    CHARACTER_INVALID_ERR
 }CompileError;
 
 
@@ -35,7 +35,7 @@ typedef enum {
     VARIABLE_NOT_FOUND_ERR = 1,
     FUNCTION_NOT_FOUND_ERR,
     ARGUMENT_TOO_MANT_ERR,
-    NOT_BOOLEAN_TYPE_ERR,
+    NOT_BOOLEAN_TYPE_ERR
 } RuntimeError;
 
 /*定义错误信息结构*/
@@ -76,7 +76,7 @@ typedef enum {
     BIT_AND_EXPRESSION,
     BIT_XOR_EXPRESSION,
 
-    EXPRESSION_TYPE_COUNT_PLUS_1,
+    EXPRESSION_TYPE_COUNT_PLUS_1
 
 } ExpressionType;
 
@@ -209,7 +209,7 @@ typedef enum {
     RETURN_STATEMENT,
     BREAK_STATEMENT,
     CONTINUE_STATEMENT,
-    STATEMENT_TYPE_CONUT_PLUS_1,
+    STATEMENT_TYPE_CONUT_PLUS_1
 } StatementType;
 
 /*statement*/
@@ -235,7 +235,7 @@ typedef struct ParameterList_tag {
 /* function type*/
 typedef enum {
     ORIGIN_FUNCTION_DEF = 1,/*语言自带的函数*/
-    NATIVE_FUNCTION_DEF,
+    NATIVE_FUNCTION_DEF
 } FunctionDefineType;
 
 typedef struct FunctionDefine_tag {
