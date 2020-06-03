@@ -248,7 +248,7 @@ static StatementResult execute_statement(ORG_Interpreter *inter, LocalEnvironmen
         case CONTINUE_STATEMENT:
             result = execute_continue_statement(inter, env, statement);
             break;
-        case STATEMENT_RESULT_TYPE_COUNT_PLUS_1:
+        case STATEMENT_TYPE_CONUT_PLUS_1:
             break;
         default:
             printf("bad case");

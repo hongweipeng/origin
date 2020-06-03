@@ -229,6 +229,7 @@ IdentifierList *org_chain_identifier(IdentifierList *list, char *identifier) {
     for (pos = list; pos->next != NULL; pos = pos->next) ;
 
     pos->next = org_create_global_identifier(identifier);
+    return list;
 }
 
 /*if语句*/
