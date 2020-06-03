@@ -338,7 +338,8 @@ IdentifierList *org_chain_identifier(IdentifierList *list, char *identifier);
 Statement *org_create_if_statement(Expression *condition, Block *then_block,
                                     Elseif *elseif_list, Block *else_block);
 Elseif *org_chain_elseif_statement(Expression *expr, Elseif *add);
-Elseif *org_create_elsif(Expression *expr, Block *block);
+Elseif *org_chain_elseif_list(Elseif *list, Elseif *add);
+Elseif *org_create_elseif(Expression *expr, Block *block);
 Statement *org_create_while_statement(Expression *condition, Block *block);
 Statement *org_create_for_statement(Expression *init, Expression *cond,
                                     Expression *post, Block *block);
