@@ -232,6 +232,7 @@ static ORG_Value * eval_binary_int(ORG_Interpreter *inter, ExpressionType op,
             printf("");
             /*DBG_panic(("bad case...%d", operator));*/
     }
+    return ret;
 }
 
 static void eval_binary_double(ORG_Interpreter *inter, ExpressionType op, double left, double right,
