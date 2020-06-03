@@ -21,5 +21,6 @@ typedef struct {
 ORG_Value * org_int_new(void);
 ORG_Value * org_int_from_int(int num);
 ORG_Value * binary_int(ORG_Value *left, ORG_Value *right, ExpressionType op);
+ORG_Value * binary_int_compare(ORG_Value *left, ORG_Value *right, ExpressionType op);
 
 #endif

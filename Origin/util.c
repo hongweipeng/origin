@@ -159,6 +159,11 @@ char *org_get_operator_string(ExpressionType type)
             break;
         case FUNCTION_CALL_EXPRESSION:  /* FALLTHRU */
         case NULL_EXPRESSION:  /* FALLTHRU */
+        case BIT_LEFT_EXPRESSION:
+        case BIT_RIGHT_EXPRESSION:
+        case BIT_OR_EXPRESSION:
+        case BIT_AND_EXPRESSION:
+        case BIT_XOR_EXPRESSION:
         case EXPRESSION_TYPE_COUNT_PLUS_1:
         default:
             printf("bad expression type..\n");

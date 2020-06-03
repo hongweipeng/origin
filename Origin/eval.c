@@ -10,6 +10,7 @@
 #include "ORG.h"
 #include "origin.h"
 #include "ORG_dev.h"
+#include "intobject.h"
 #include "boolobject.h"
 
 /*布尔表达式*/
@@ -145,6 +146,7 @@ static ORG_Boolean eval_binary_boolean(ORG_Interpreter *inter, ExpressionType op
         result = (left != right);
     } else {
         char *op_str = org_get_operator_string(op);
+        printf("no support between bool use '%s'\n", op_str);
         /*run time error*/
     }
 
@@ -156,7 +158,7 @@ static ORG_Value * eval_binary_int(ORG_Interpreter *inter, ExpressionType op,
     ORG_Value *ret = result;
     if (dkc_is_math_operator(op)) {
         result->type = ORG_INT_VALUE;
-        ret = binary_int(org_int_from_int(left), org_int_from_int(right), op); // todo: 参数跟进为 ORG_Value *left, ORG_Value *right
+        ret = binary_int(org_int_from_int(left), org_int_from_int(right), op); /*todo: 参数跟进为 ORG_Value *left, ORG_Value *right*/
         result->u.int_value = ret->u.int_value;
         return ret;
     } else if (dkc_is_compare_operator(op)) {
@@ -233,7 +235,7 @@ static ORG_Value * eval_binary_int(ORG_Interpreter *inter, ExpressionType op,
         case NULL_EXPRESSION:               /* FALLTHRU */
         case EXPRESSION_TYPE_COUNT_PLUS_1:  /* FALLTHRU */
         default:
-            printf("");
+            printf("no support EXPRESSION_TYPE:%d\n", op);
             /*DBG_panic(("bad case...%d", operator));*/
     }
     return ret;
@@ -256,6 +258,11 @@ static void eval_binary_double(ORG_Interpreter *inter, ExpressionType op, double
         case DOUBLE_EXPRESSION:     /* fail */
         case STRING_EXPRESSION:     /* fail */
         case IDENTIFIER_EXPRESSION: /* fail */
+        case BIT_LEFT_EXPRESSION:
+        case BIT_RIGHT_EXPRESSION:
+        case BIT_OR_EXPRESSION:
+        case BIT_AND_EXPRESSION:
+        case BIT_XOR_EXPRESSION:
         case ASSIGN_EXPRESSION:
             /*DBG_panic(("bad case...%d", operator));*/
             break;
@@ -301,7 +308,7 @@ static void eval_binary_double(ORG_Interpreter *inter, ExpressionType op, double
         case NULL_EXPRESSION:               /* fail */
         case EXPRESSION_TYPE_COUNT_PLUS_1:  /* fail */
         default:
-            printf("");
+            printf("no support EXPRESSION_TYPE:%d\n", op);
             /*DBG_panic(("bad default...%d", operator));*/
     }
 
@@ -310,7 +317,7 @@ static void eval_binary_double(ORG_Interpreter *inter, ExpressionType op, double
 static ORG_Boolean eval_compare_string(ExpressionType op, ORG_Value *left, ORG_Value *right, int line_number) {
     ORG_Boolean result;
     int cmp;
-    cmp = strcmp(left->u.string_value, right->u.string_value);
+    cmp = strcmp(left->u.string_value->string, right->u.string_value->string);
 
     if (op == EQ_EXPRESSION) {
         result = (cmp == 0);
@@ -326,6 +333,7 @@ static ORG_Boolean eval_compare_string(ExpressionType op, ORG_Value *left, ORG_V
         result = (cmp <= 0);
     } else {
         char *op_str = org_get_operator_string(op);
+        printf("no support between string use '%s'\n", op_str);
         /*runtime error*/
     }
     org_release_string(left->u.string_value);
@@ -343,6 +351,7 @@ static ORG_Boolean eval_binary_null(ORG_Interpreter *inter, ExpressionType op, O
         result = !(left->type == ORG_NULL_VALUE && right->type == ORG_NULL_VALUE);
     } else {
         char *op_str = org_get_operator_string(op);
+        printf("no support between null use '%s'\n", op_str);
         /*runtime error*/
     }
     release_if_string(left);
@@ -412,7 +421,7 @@ ORG_Value * org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment 
             sprintf(buf, "%d", right_val->u.int_value);
             right_str = org_create_origin_string(inter, MEM_strdup(buf));
         } else if(right_val->type == ORG_DOUBLE_VALUE) {
-            sprintf(buf, "%lf", right_val->u.double_value);
+            sprintf(buf, "%f", right_val->u.double_value);
             right_str = org_create_origin_string(inter, MEM_strdup(buf));
         } else if (right_val->type == ORG_BOOLEAN_VALUE) {
             right_str = (right_val->u.boolean_value) ? org_create_origin_string(inter, MEM_strdup("true")) : org_create_origin_string(inter, MEM_strdup("false"));
@@ -429,13 +438,14 @@ ORG_Value * org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment 
         result->u.boolean_value = eval_binary_boolean(inter, op, left_val->u.boolean_value, right_val->u.boolean_value, left->line_number);
     } else if (left_val->type == ORG_STRING_VALUE && right_val->type == ORG_STRING_VALUE) {
         /* "12" > "abc"*/
-        result->type == ORG_DOUBLE_VALUE;
+        result->type = ORG_BOOLEAN_VALUE;
         result->u.boolean_value = eval_compare_string(op, left_val, right_val, left->line_number);
     } else if (left_val->type == ORG_NULL_VALUE || right_val->type == ORG_NULL_VALUE) {
         result->type = ORG_NULL_VALUE;
         result->u.boolean_value = eval_binary_null(inter, op, left_val, right_val, left->line_number);
     } else {
         char *op_str = org_get_operator_string(op);
+        printf("no support between bool use '%s'\n", op_str);
         /*runtime error*/
 
         exit(1);
@@ -449,10 +459,10 @@ ORG_Value * org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment 
 static ORG_Value * eval_logical_and_or_expression(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op, Expression *left, Expression *right) {
     ORG_Value *left_val = NULL;
     ORG_Value *right_val = NULL;
-//    ORG_Value *result = (ORG_Value *) org_malloc(sizeof(ORG_Value));
+    /*ORG_Value *result = (ORG_Value *) org_malloc(sizeof(ORG_Value));*/
     ORG_Value *result = ORG_False;
 
-//    result->type = ORG_BOOLEAN_VALUE;
+    /*result->type = ORG_BOOLEAN_VALUE;*/
     left_val = eval_expression(inter, env, left);
 
     if (left_val->type != ORG_BOOLEAN_VALUE) {
@@ -480,7 +490,7 @@ static ORG_Value * eval_logical_and_or_expression(ORG_Interpreter *inter, LocalE
         exit(1);
     }
 
-    // result->u.boolean_value = right_val->u.boolean_value;
+    /*result->u.boolean_value = right_val->u.boolean_value;*/
     return right_val;
 }
 
@@ -539,6 +549,7 @@ static ORG_Value * call_native_function(ORG_Interpreter *inter, LocalEnvironment
     int arg_count;
     ArgumentList *arg_p;
     ORG_Value *args;
+    ORG_Value ret;
     int i;
 
     for (arg_count = 0, arg_p = expr->u.function_call_expression.argument; arg_p; arg_p = arg_p->next) {
@@ -552,7 +563,7 @@ static ORG_Value * call_native_function(ORG_Interpreter *inter, LocalEnvironment
         args[i] = *arg;
         i++;
     }
-    ORG_Value ret = proc(inter, arg_count, args);
+    ret = proc(inter, arg_count, args);
     value = &ret;
     for (i = 0; i < arg_count; i++) {
         release_if_string(&args[i]);
