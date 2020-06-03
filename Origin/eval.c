@@ -150,11 +150,14 @@ static ORG_Boolean eval_binary_boolean(ORG_Interpreter *inter, ExpressionType op
     return result;
 }
 
-static void eval_binary_int(ORG_Interpreter *inter, ExpressionType op,
+static ORG_Value * eval_binary_int(ORG_Interpreter *inter, ExpressionType op,
                             int left, int right, ORG_Value *result, int line_number) {
-
+    ORG_Value *ret = result;
     if (dkc_is_math_operator(op)) {
         result->type = ORG_INT_VALUE;
+        ret = binary_int(org_int_from_int(left), org_int_from_int(right), op); // todo: 参数跟进为 ORG_Value *left, ORG_Value *right
+        result->u.int_value = ret->u.int_value;
+        return ret;
     } else if (dkc_is_compare_operator(op)) {
         result->type = ORG_BOOLEAN_VALUE;
     } else {

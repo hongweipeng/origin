@@ -23,8 +23,8 @@ ORG_Value * org_int_new() {
 
 ORG_Value * org_int_from_int(int num) {
     ORG_Int *v = _int_new_imp();
-    ((ORG_Value *)v)->u.int_value = num;    // todo: 后续移除
     v->digit_value = num;
+    ((ORG_Value *)v)->u.int_value = num;    // todo: 后续移除
     return (ORG_Value *) v;
 }
 
@@ -38,7 +38,6 @@ ORG_Value * org_int_from_int(int num) {
 ORG_Value * binary_int(ORG_Value *left, ORG_Value *right, ExpressionType op) {
     int left_int = int_from_org_value(left);
     int right_int = int_from_org_value(right);
-    printf("left=%d\n", left_int);
     int result = 0;
 
     if (op == ADD_EXPRESSION) {
