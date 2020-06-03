@@ -146,7 +146,7 @@ typedef struct Statement_tag Statement;
 /*代码段列*/
 typedef struct StatementList_tag {
     Statement *statement;
-    struct Statement_tag *next;
+    struct StatementList_tag *next;
 } StatementList;
 
 /*块*/
