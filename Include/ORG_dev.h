@@ -52,12 +52,6 @@ typedef struct {
     } u;
 } ORG_Value;
 
-/* 整型类型*/
-typedef struct {
-    ORG_Value ob_base;
-    int digit_value;
-} ORG_Int;
-
 typedef ORG_Value ORG_NativeFunctionPro(ORG_Interpreter *interpreter, int arg_count, ORG_Value *argc);
 
 

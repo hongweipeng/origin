@@ -20,7 +20,7 @@ static ORG_Value * eval_boolean_expression(ORG_Boolean boolean_value) {
 }
 
 static  ORG_Value * eval_int_expression(int int_value) {
-    ORG_Value *v = (ORG_Value *) org_malloc(sizeof(ORG_Value));
+    ORG_Value *v = org_int_from_int(int_value);
     v->type = ORG_INT_VALUE;
     v->u.int_value = int_value;
     return v;

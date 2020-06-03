@@ -14,6 +14,7 @@ OBJS = 	\
 		string_pool.o \
 		Origin/util.o \
 		Origin/native.o \
+		Objects/intobject.o \
 		mem.o
 
 INCLUDES = -I. -I./Include
@@ -60,9 +61,10 @@ native.o: $(COREDIR)/native.c Include/MEM.h Include/DBG.h Include/origin.h Inclu
 string.o: string.c Include/MEM.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 string_pool.o: string_pool.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
 util.o: $(COREDIR)/util.c Include/MEM.h Include/DBG.h Include/origin.h Include/ORG.h Include/ORG_dev.h
+intobject.o: Objects/intobject.c Include/origin.h Include/ORG.h Include/ORG_dev.h
 
 rebuild: clean $(TARGET)
 
 clean:
-	rm -f *.o $(COREDIR)/*.o lex.yy.c y.tab.c origin.tab.h $(TARGET) $(TARGET).tab.c $(TARGET).tab.h *~
+	rm -f *.o $(COREDIR)/*.o Objects/*.o lex.yy.c y.tab.c origin.tab.h $(TARGET) $(TARGET).tab.c $(TARGET).tab.h *~
 
