@@ -104,7 +104,11 @@
         sprintf(buf, "0x%02x", (unsigned char)yytext[0]);
     }
     //编译错误
-    //org_compile_error();
+    if (yytext[0] != '\r') {
+        //org_compile_error();
+        printf("词法分析阶段错误，行号%d 未知词语: %s\n", org_get_current_interpreter()->current_line_number, yytext);
+        exit(1);
+    }
 }
 
 <COMMENT>\n {
