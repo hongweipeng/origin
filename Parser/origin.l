@@ -106,7 +106,7 @@
     //编译错误
     if (yytext[0] != '\r') {
         //org_compile_error();
-        printf("词法分析阶段错误，行号%d 未知词语: %s\n", org_get_current_interpreter()->current_line_number, yytext);
+        printf("Lexical analysis stage error,line %d unknown word: '%s'\n", org_get_current_interpreter()->current_line_number, yytext);
         exit(1);
     }
 }
