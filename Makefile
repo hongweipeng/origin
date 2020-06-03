@@ -15,6 +15,7 @@ OBJS = 	\
 		Origin/util.o \
 		Origin/native.o \
 		Objects/intobject.o \
+		Objects/boolobject.o \
 		mem.o
 
 INCLUDES = -I. -I./Include
