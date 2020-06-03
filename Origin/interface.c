@@ -43,7 +43,7 @@ void ORG_compile(ORG_Interpreter *inter, FILE *fp) {
 
     yyin = fp;
     if (yyparse()) {
-        fprintf(stderr, "Error Error\n");
+        fprintf(stderr, "Error Error 语法解析错误\n");
     }
     org_reset_string_literal_buffer();
 }

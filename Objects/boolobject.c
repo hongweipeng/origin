@@ -12,10 +12,10 @@ static ORG_Bool * _bool_new_imp() {
 
 
 ORG_Bool _ORG_TrueStruct = {
-    { ORG_BOOLEAN_VALUE, { .boolean_value=ORG_TRUE }},
+    { ORG_BOOLEAN_VALUE, { ORG_TRUE }},
     ORG_TRUE,
 };
 ORG_Bool _ORG_FalseStruct = {
-    {ORG_BOOLEAN_VALUE, { .boolean_value=ORG_FALSE }},
+    { ORG_BOOLEAN_VALUE, { ORG_FALSE }},
     ORG_FALSE,
 };

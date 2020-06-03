@@ -1,4 +1,5 @@
 #include "intobject.h"
+#include "boolobject.h"
 
 static ORG_Int * _int_new_imp() {
     ORG_Int *return_value = (ORG_Int *) org_malloc(sizeof(ORG_Int));
@@ -6,8 +7,28 @@ static ORG_Int * _int_new_imp() {
     return return_value;
 }
 
+/**
+ * 从 ORG_Value 中获得int值
+ * @param value
+ * @return
+ */
 static int int_from_org_value(ORG_Value *value) {
     return ((ORG_Int *)value)->digit_value;
+}
+
+/**
+ * 比较
+ * 当 a == b: 返回 0
+ * 当 a > b: 返回 正数
+ * 当 a < b: 返回 负数
+ * todo: 处理溢出
+ * @param a
+ * @param b
+ * @return
+ */
+static int int_compare(ORG_Int *a, ORG_Int *b) {
+    int sign = a->digit_value - b->digit_value;
+    return sign;
 }
 
 /**
@@ -24,7 +45,7 @@ ORG_Value * org_int_new() {
 ORG_Value * org_int_from_int(int num) {
     ORG_Int *v = _int_new_imp();
     v->digit_value = num;
-    ((ORG_Value *)v)->u.int_value = num;    // todo: 后续移除
+    ((ORG_Value *)v)->u.int_value = num;   /* todo: 后续移除*/
     return (ORG_Value *) v;
 }
 
@@ -74,7 +95,26 @@ ORG_Value * binary_int(ORG_Value *left, ORG_Value *right, ExpressionType op) {
  * @return
  */
 ORG_Value * binary_int_compare(ORG_Value *left, ORG_Value *right, ExpressionType op) {
-    return NULL;
+    int sign = int_compare((ORG_Int *) left, (ORG_Int *) right);
+    int tmp = 0;
+
+    if (op == EQ_EXPRESSION) {
+        tmp = sign == 0;
+    } else if (op == NE_EXPRESSION) {
+        tmp = sign != 0;
+    } else if (op == GT_EXPRESSION) {
+        tmp = sign > 0;
+    } else if (op == GE_EXPRESSION) {
+        tmp = sign >= 0;
+    } else if (op == LT_EXPRESSION) {
+        tmp = sign < 0;
+    } else if (op == LE_EXPRESSION) {
+        tmp = sign <= 0;
+    } else {
+        /*不支持的操作*/
+    }
+
+    return tmp ? ORG_True : ORG_False;;
 }
 
 

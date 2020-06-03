@@ -15,6 +15,9 @@ typedef struct {
     ORG_Boolean bool_value;
 } ORG_Bool;
 
+
+extern ORG_Bool _ORG_TrueStruct, _ORG_FalseStruct;
+
 #define ORG_True ((ORG_Value*) &_ORG_TrueStruct)
 #define ORG_False ((ORG_Value*) &_ORG_FalseStruct)
 

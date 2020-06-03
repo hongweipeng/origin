@@ -10,6 +10,7 @@
 #include "ORG.h"
 #include "origin.h"
 #include "ORG_dev.h"
+#include "boolobject.h"
 
 /*布尔表达式*/
 static ORG_Value * eval_boolean_expression(ORG_Boolean boolean_value) {
@@ -160,6 +161,9 @@ static ORG_Value * eval_binary_int(ORG_Interpreter *inter, ExpressionType op,
         return ret;
     } else if (dkc_is_compare_operator(op)) {
         result->type = ORG_BOOLEAN_VALUE;
+        ret = binary_int_compare(org_int_from_int(left), org_int_from_int(right), op);
+        result->u.boolean_value = ret->u.boolean_value;
+        return ret;
     } else {
         /*debug*/
     }
@@ -445,9 +449,10 @@ ORG_Value * org_eval_binary_expression(ORG_Interpreter *inter, LocalEnvironment 
 static ORG_Value * eval_logical_and_or_expression(ORG_Interpreter *inter, LocalEnvironment *env, ExpressionType op, Expression *left, Expression *right) {
     ORG_Value *left_val = NULL;
     ORG_Value *right_val = NULL;
-    ORG_Value *result = (ORG_Value *) org_malloc(sizeof(ORG_Value));
+//    ORG_Value *result = (ORG_Value *) org_malloc(sizeof(ORG_Value));
+    ORG_Value *result = ORG_False;
 
-    result->type = ORG_BOOLEAN_VALUE;
+//    result->type = ORG_BOOLEAN_VALUE;
     left_val = eval_expression(inter, env, left);
 
     if (left_val->type != ORG_BOOLEAN_VALUE) {
@@ -457,12 +462,12 @@ static ORG_Value * eval_logical_and_or_expression(ORG_Interpreter *inter, LocalE
 
     if (op == LOGICAL_AND_EXPRESSION) {
         if (!left_val->u.boolean_value) {
-            result->u.boolean_value = ORG_FALSE;
+            result = ORG_False;
             return result;/*短路求值*/
         }
     } else if (op == LOGICAL_OR_EXPRESSION) {
         if (left_val->u.boolean_value) {
-            result->u.boolean_value = ORG_TRUE;
+            result = ORG_True;
             return result;
         }
     } else {
@@ -475,8 +480,8 @@ static ORG_Value * eval_logical_and_or_expression(ORG_Interpreter *inter, LocalE
         exit(1);
     }
 
-    result->u.boolean_value = right_val->u.boolean_value;
-    return result;
+    // result->u.boolean_value = right_val->u.boolean_value;
+    return right_val;
 }
 
 /* 单元取反*/
